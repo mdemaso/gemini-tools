@@ -1,0 +1,24 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "./setup-ai-symlinks.sh"
+          }
+        ]
+      }
+    ],
+    "BeforeModel": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".gemini/hooks/security-scan.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
