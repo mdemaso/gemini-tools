@@ -20,9 +20,10 @@ curl -sSL https://raw.githubusercontent.com/mdemaso/gemini-tools/main/install.sh
 ```
 
 This will:
-1. Clone the core `.shared-ai` skills.
-2. Set up the necessary symlinks for Gemini, Claude, and Copilot.
-3. Initialize the base configuration.
+1. Add `gemini-tools` as a git submodule in `.sdlc/`.
+2. Symlink your current project into the SDLC workspace.
+3. Set up the necessary symlinks for Gemini, Claude, and Copilot.
+4. Initialize the base configuration.
 
 ## 📖 How to Use
 
@@ -49,13 +50,17 @@ This will:
 
 ```text
 .
-├── .shared-ai/             # Core "Intelligence" directory
-│   ├── skills/             # Specialized SDLC workflows
-│   ├── shared-references/  # Global protocols (Clarification Strategy)
-│   └── hooks/              # Security and session hooks
-├── .gemini/                # Gemini CLI config (symlinked to .shared-ai)
-├── .claude/                # Claude Code config (symlinked to .shared-ai)
-└── setup-ai-symlinks.sh    # Script to maintain agent cross-compatibility
+├── .sdlc/                  # Gemini-Tools Submodule
+│   ├── .shared-ai/         # Core "Intelligence" directory
+│   │   ├── skills/         # Specialized SDLC workflows
+│   │   ├── hooks/          # Security and session hooks
+│   │   └── ...
+│   ├── projects/           # Workspace where current project is symlinked
+│   └── ...
+├── .gemini/                # Gemini CLI config (symlinked to .sdlc/.shared-ai)
+├── .claude/                # Claude Code config (symlinked to .sdlc/.shared-ai)
+├── projects/               # Root symlink to .sdlc/projects for easy AI discovery
+└── documentation/          # Where you place project-specific input/docs
 ```
 
 ## 🔍 Troubleshooting
