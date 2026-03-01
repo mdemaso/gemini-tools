@@ -20,8 +20,9 @@ When the user wants to set up a new project, follow these steps:
     *   Construct the final directory name using the format: `{project_id}-{formatted_project_name}`.
 
 3.  **Execute Creation**:
-    *   Create a directory at `projects/{project_id}-{formatted_project_name}`.
-    *   Inside that directory, create a `documentation/` subfolder.
+    *   **Root Directory**: Ensure the `projects/` root directory exists (create it if missing).
+    *   **Project Directory**: Create a directory at `projects/{project_id}-{formatted_project_name}`.
+    *   **Documentation Folder**: Inside the project directory, ensure a `documentation/` subfolder exists (create it if missing).
     *   Add a placeholder `README.md` inside the project folder summarizing the project metadata.
     *   **Register Project**: Add an entry to the `projects/INDEX.md` file (create it if it doesn't exist) with the Project ID, Project Name, and the path to the project folder.
 
