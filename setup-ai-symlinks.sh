@@ -21,12 +21,11 @@ create_symlinks() {
     mkdir -p "$target_base"
     
     # Calculate relative prefix to get back to the project root from target_base
-    local to_root=""
+    local to_root="../"
     local slashes="${target_base//[^\/]}"
     for ((i=0; i<${#slashes}; i++)); do
         to_root="../${to_root}"
     done
-    [ -z "$slashes" ] && to_root="./"
 
     for dir in "${subdirs[@]}"; do
         local link_path="$target_base/$dir"
