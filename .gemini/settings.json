@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "./setup-ai-symlinks.sh"
+            "command": ".gemini/hooks/sync-and-link.sh"
           }
         ]
       }
