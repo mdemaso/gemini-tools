@@ -22,10 +22,10 @@ fi
 echo "🔗 Setting up AI agent symlinks..."
 bash "$SUBMODULE_DIR/setup-ai-symlinks.sh"
 
-# 3. Ensure a local documentation folder exists
-if [ ! -d "documentation" ]; then
-    echo "📁 Creating local documentation folder..."
-    mkdir documentation
+# 3. Ensure a local projects folder exists
+if [ ! -d "projects" ]; then
+    echo "📁 Creating local projects folder..."
+    mkdir projects
 fi
 
 # 4. Copy base configuration for Gemini if missing

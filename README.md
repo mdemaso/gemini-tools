@@ -21,7 +21,7 @@ curl -sSL https://raw.githubusercontent.com/mdemaso/gemini-tools/main/install.sh
 
 This will:
 1. Add `gemini-tools` as a git submodule in `.sdlc/`.
-2. Symlink your current project into the SDLC workspace.
+2. Ensure a local `projects/` directory exists at your repository root.
 3. Set up the necessary symlinks for Gemini, Claude, and Copilot.
 4. Initialize the base configuration.
 
@@ -30,21 +30,15 @@ This will:
 1. **Initialize your Project**:
    If starting from scratch, tell your AI agent:
    > "Run the project-setup skill."
+   This will create a new subfolder in `projects/` with its own `documentation/` directory.
 
 2. **Generate Requirements & Design**:
-   Place any initial notes in the `documentation/` folder and run:
-   > "Generate the PRD and Tech Plan."
+   Place any initial notes in the specific `projects/{your-project}/documentation/` folder and run:
+   > "Generate the PRD and Tech Plan for {your-project}."
 
 3. **Start Orchestration**:
    To begin the automated development loop, simply say:
    > "Run the sdlc-orchestrator."
-
-   The orchestrator will guide you through:
-   - Defining the roadmap.
-   - Injecting implementation agents.
-   - Running parallel tasks in isolated worktrees.
-   - Validating work against generated tests.
-   - Final human review.
 
 ## 📁 Project Structure
 
@@ -58,7 +52,12 @@ This will:
 │   └── ...
 ├── .gemini/                # Gemini CLI config (symlinked to .sdlc/.shared-ai)
 ├── .claude/                # Claude Code config (symlinked to .sdlc/.shared-ai)
-└── documentation/          # Project-specific input/docs (Created during install)
+└── projects/               # Standardized container for project-based work
+    └── {my-project}/       # An individual project managed by the tools
+        ├── documentation/  # Where project-specific inputs go
+        ├── PRD.md
+        ├── TECH_PLAN.md
+        └── ...
 ```
 
 ## 🔍 Troubleshooting
