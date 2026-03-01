@@ -27,18 +27,20 @@ This will:
 
 ## 📖 How to Use
 
-1. **Initialize your Project**:
-   If starting from scratch, tell your AI agent:
-   > "Run the project-setup skill."
-   This will create a new subfolder in `projects/` with its own `documentation/` directory.
-
-2. **Generate Requirements & Design**:
-   Place any initial notes in the specific `projects/{your-project}/documentation/` folder and run:
-   > "Generate the PRD and Tech Plan for {your-project}."
-
-3. **Start Orchestration**:
-   To begin the automated development loop, simply say:
+1. **Start the Orchestrator**:
+   Simply say:
    > "Run the sdlc-orchestrator."
+
+2. **Project Selection**:
+   The orchestrator will ask if you want to:
+   - **Start a New Project**: Invokes `project-setup` to create a new workspace.
+   - **Resume an Existing Project**: Lists the 5 most recently modified projects in `projects/` for selection.
+
+3. **Lifecycle Management**:
+   Once a project is selected or created, the orchestrator will automatically:
+   - Generate missing `PRD.md` or `TECH_PLAN.md`.
+   - Create a dependency-aware implementation guide.
+   - Execute tasks in parallel using isolated Git Worktrees.
 
 ## 📁 Project Structure
 
