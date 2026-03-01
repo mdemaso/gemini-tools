@@ -10,7 +10,7 @@ This skill keeps the project's task list up to date by modifying the `WORK_ITEMS
 ## Workflow
 
 1.  **Identify the Task**: Determine the **Task ID** and the **New Status** (e.g., "Done", "In Progress", "Blocked") for the work being updated.
-2.  **Locate WORK_ITEMS.md**: Find the `WORK_ITEMS.md` file in the root of the active project folder within `projects/`.
+2.  **Locate WORK_ITEMS.md**: Find the `WORK_ITEMS.md` file in the root of the active project folder.
 3.  **Execute Update**:
     *   Use the provided script to ensure the Markdown table format is maintained:
         `node scripts/update_task.cjs <path/to/WORK_ITEMS.md> <taskId> <newStatus>`

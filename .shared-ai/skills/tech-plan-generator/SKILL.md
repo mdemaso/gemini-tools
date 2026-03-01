@@ -10,7 +10,8 @@ This skill translates the "Why" and "What" of a Product Requirements Document (P
 ## Workflow
 
 1.  **Locate Project Context**: 
-    *   Identify the target project directory in `projects/`.
+    *   If running in a standalone repository: Use the root directory.
+    *   If running in a workspace: Identify the target project directory in the `projects/` folder.
     *   Read the `PRD.md` file from the project root (Primary source).
     *   Read files in the `documentation/` subfolder (Secondary context).
     *   **Analyze Existing Codebase**: Perform a broad scan of the existing project codebase (if applicable) to understand established patterns, naming conventions, and architectural styles.
@@ -33,7 +34,7 @@ This skill translates the "Why" and "What" of a Product Requirements Document (P
         *   Specific technical hurdles and proposed mitigations.
     *   **Infrastructure & DevOps**: Deployment strategy, CI/CD, and monitoring approach.
 
-4.  **Output**: Write the content to `projects/{project_id}-{project_name}/TECH_PLAN.md`. Notify the user upon completion.
+4.  **Output**: Write the content to a `TECH_PLAN.md` file in the root of the project folder. Notify the user upon completion.
 
 ## Constraints
 - Diagrams MUST be valid Mermaid.js code blocks.

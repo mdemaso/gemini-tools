@@ -9,7 +9,9 @@ This skill analyzes documents in a project's `documentation` folder to generate 
 
 ## Workflow
 
-1.  **Locate the Project**: Identify the project directory in the `projects/` folder that the user wants to process.
+1.  **Locate the Project**: 
+    *   If running in a standalone repository: Use the root directory.
+    *   If running in a workspace: Identify the target project directory in the `projects/` folder.
 2.  **Analyze Documentation**: 
     *   Read all supporting files found within the project's `documentation/` subfolder.
     *   **Diverse Format Support**: Process text files, Markdown, PDFs, and images (e.g., diagrams, whiteboard photos) using your multimodal capabilities to extract relevant requirements and context.
@@ -23,4 +25,4 @@ This skill analyzes documents in a project's `documentation` folder to generate 
         *   **Non-Functional Requirements**: How the product must perform (e.g., performance, security, scale).
     *   **MVP Details**: Specifically define the scope for the Minimum Viable Product, isolating core features from nice-to-haves.
     *   **Follow Up Items**: A list of unresolved questions, next steps, or dependencies that need attention before development begins.
-5.  **Output**: Write the generated content to a `PRD.md` file in the root of the project folder (e.g., `projects/{project_id}-{project_name}/PRD.md`). Briefly summarize the document and notify the user when complete.
+5.  **Output**: Write the generated content to a `PRD.md` file in the root of the project folder. Briefly summarize the document and notify the user when complete.

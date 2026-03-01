@@ -55,12 +55,10 @@ This will:
 │   │   ├── skills/         # Specialized SDLC workflows
 │   │   ├── hooks/          # Security and session hooks
 │   │   └── ...
-│   ├── projects/           # Workspace where current project is symlinked
 │   └── ...
 ├── .gemini/                # Gemini CLI config (symlinked to .sdlc/.shared-ai)
 ├── .claude/                # Claude Code config (symlinked to .sdlc/.shared-ai)
-├── projects/               # Root symlink to .sdlc/projects for easy AI discovery
-└── documentation/          # Where you place project-specific input/docs
+└── documentation/          # Project-specific input/docs (Created during install)
 ```
 
 ## 🔍 Troubleshooting
