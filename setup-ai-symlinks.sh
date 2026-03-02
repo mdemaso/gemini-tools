@@ -119,9 +119,13 @@ setup_tool_configs() {
     setup_category_symlinks "$target_folder" "commands"
 }
 
-# Run setup for each tool
-setup_tool_configs ".gemini"
-setup_tool_configs ".claude"
-setup_tool_configs ".github/copilot"
+# Run setup
+if [ -n "$1" ]; then
+    setup_tool_configs "$1"
+else
+    setup_tool_configs ".gemini"
+    setup_tool_configs ".claude"
+    setup_tool_configs ".github/copilot"
+fi
 
 echo "✅ AI agent configurations linked successfully via individual symlinks."
