@@ -55,15 +55,6 @@ if [[ "$REL_BASE" != "." ]]; then
     fi
     
     ln -s "$REL_BASE/.agents" ".agents"
-
-    # Also link .gemini and .claude to .agents for tool discovery
-    echo "🔗 Linking tool discovery folders (.gemini, .claude) -> .agents"
-    ln -sf ".agents" ".gemini"
-    ln -sf ".agents" ".claude"
-
-    # Handle .github/copilot separately if needed, or link it too
-    mkdir -p .github
-    ln -sf "../.agents" ".github/copilot"
 fi
 
 echo "✅ AI configurations linked successfully."

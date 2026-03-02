@@ -11,7 +11,7 @@ Gemini-Tools is a high-performance, standardized framework designed to automate 
 - **Documentation Engine**: Automates the setup of professional MkDocs sites with Material theme, Mermaid diagrams, and interactive pan/zoom.
 - **Context Optimization**: Dynamically trims and summarizes project context to keep AI agents focused and reduce token usage.
 - **Human-in-the-Loop**: A formal review gate for user approval of code changes and documentation updates.
-- **Hybrid Proxy System**: Uses real wrapper scripts and bridge files for cross-agent compatibility instead of brittle symlinks.
+- **Unified Configuration**: All tools share a single source of truth via the `.agents/` directory, ensuring consistent behavior across all agents.
 
 ## 🛠 Installation
 
@@ -24,15 +24,8 @@ curl -sSL https://raw.githubusercontent.com/mdemaso/gemini-tools/main/install.sh
 ### The Installation Process
 
 1.  **Submodule Initialization**: The script adds `gemini-tools` as a git submodule in the `.sdlc/` directory. This keeps the orchestration logic isolated and easily updatable.
-2.  **Configuration Setup**: It runs `setup-ai-symlinks.sh` to initialize your AI tool configurations (e.g., `.agents/`, `.github/copilot/`).
-    -   **Unified Configuration**: A single `.agents/` directory is created, with `.gemini` and `.claude` symlinked to it for cross-tool compatibility.
-    -   **Individual Symlinks**: Within `.agents/`, the script creates individual symbolic links for each skill, hook, and agent from the shared core.
-### The Installation Process
-
-1.  **Submodule Initialization**: The script adds `gemini-tools` as a git submodule in the `.sdlc/` directory. This keeps the orchestration logic isolated and easily updatable.
-2.  **Configuration Setup**: It runs `setup-ai-symlinks.sh` to initialize your AI tool configurations.
-    -   **Unified Core**: A single `.agents/` folder is symlinked from the submodule into your project root.
-    -   **Tool Discovery**: Symlinks for `.gemini`, `.claude`, and `.github/copilot` are created pointing to `.agents/`, ensuring all tools share the same configuration, skills, and hooks.
+2.  **Configuration Setup**: It runs `setup-ai-symlinks.sh` to initialize your AI tool configuration.
+    -   **Unified Core**: A single `.agents/` folder is symlinked from the submodule into your project root. This ensures all tools share the same configuration, skills, and hooks.
 3.  **Project Container**: A `projects/` directory is created to house isolated, task-specific workspaces managed by the orchestrator.
 4.  **Security Hooks**: Local git hooks are configured to run security scans and synchronization checks.
 
@@ -65,9 +58,6 @@ After installation, your project directory will contain the following artifacts:
 │   ├── setup-ai-symlinks.sh    # The tool-agnostic setup engine
 │   └── ...
 ├── .agents/                    # Symlink to .sdlc/.agents/
-├── .gemini/                    # Symlink to .agents/
-├── .claude/                    # Symlink to .agents/
-├── .github/copilot/            # Symlink to .agents/
 ├── projects/                   # The "Workbench" for AI-managed tasks
 ```
 
@@ -76,7 +66,7 @@ After installation, your project directory will contain the following artifacts:
 By merging all core logic into a single `.agents` folder and using folder-level symlinks:
 -   **Zero Maintenance**: Any new skill or hook added to the repository is immediately available to all tools without any script updates.
 -   **Consistent Experience**: Your custom `settings.json`, specialized skills, and security hooks are identical across Gemini, Claude, and Copilot.
--   **Cleaner Root**: Tool-specific folders become simple aliases, keeping your repository root focused and organized.
+-   **Cleaner Root**: No more tool-specific folders or aliases, keeping your repository root focused and organized.
 
 ## 🔍 Troubleshooting
 
