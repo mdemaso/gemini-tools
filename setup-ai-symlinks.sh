@@ -62,6 +62,10 @@ if [ -d ".agents" ]; then
     echo "🔗 Linking tool discovery folders (.gemini, .claude) -> .agents"
     ln -sf ".agents" ".gemini"
     ln -sf ".agents" ".claude"
+
+    echo "🔗 Linking .github/copilot -> .agents"
+    mkdir -p .github
+    ln -sf "../.agents" ".github/copilot"
 fi
 
 echo "✅ AI configurations linked successfully."
