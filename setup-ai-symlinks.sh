@@ -44,26 +44,28 @@ REL_BASE=$(get_relative_path "$SCRIPT_DIR" "$CURRENT_DIR")
 
 echo "🔧 Tools Base: $REL_BASE"
 
-# If we are running in the tool repo itself, REL_BASE is "."
-# We only want to symlink if we are in a parent project
+# 1. Setup the primary .agents configuration folder
 if [[ "$REL_BASE" != "." ]]; then
     echo "📂 Linking .agents configuration folder..."
-    
+
     # Remove existing .agents if it's a symlink or directory
     if [ -L ".agents" ] || [ -d ".agents" ]; then
         rm -rf ".agents"
     fi
-    
+
     ln -s "$REL_BASE/.agents" ".agents"
+fi
 
-    # Also link .gemini and .claude to .agents for tool discovery
-    # echo "🔗 Linking tool discovery folders (.gemini, .claude) -> .agents"
-    # ln -sf ".agents" ".gemini"
-    # ln -sf ".agents" ".claude"
+# 2. Link tool discovery folders (.gemini, .claude, .github/copilot) to .agents
+if [ -d ".agents" ]; then
+    echo "🔗 Linking tool discovery folders (.gemini, .claude) -> .agents"
+    ln -sf ".agents" ".gemini"
+    ln -sf ".agents" ".claude"
 
-    # Handle .github/copilot separately if needed, or link it too
-    # mkdir -p .github
-    # ln -sf "../.agents" ".github/copilot"
+    echo "🔗 Linking .github/copilot -> .agents"
+    mkdir -p .github
+    ln -sf "../.agents" ".github/copilot"
 fi
 
 echo "✅ AI configurations linked successfully."
+
