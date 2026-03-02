@@ -51,7 +51,7 @@ setup_tool_proxies() {
     local source_folder="${SCRIPT_DIR}/${target_folder}"
 
     # If the source and target folders are the same, we are likely running in the tool repo itself
-    if [ "$(realpath "$source_folder" 2>/dev/null || echo "$source_folder")" = "$(realpath "$target_folder" 2>/dev/null || echo "$target_folder")" ]; then
+    if [ -d "$source_folder" ] && [ -d "$target_folder" ] && [ "$source_folder" -ef "$target_folder" ]; then
         echo "⏭ Skipping $target_folder (source and target are the same)"
         return
     fi
