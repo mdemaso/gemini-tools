@@ -1,1 +1,0 @@
-../../../.shared-ai/skills/review-skill/SKILL.md

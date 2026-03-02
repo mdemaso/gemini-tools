@@ -27,7 +27,12 @@ curl -sSL https://raw.githubusercontent.com/mdemaso/gemini-tools/main/install.sh
 2.  **Configuration Setup**: It runs `setup-ai-symlinks.sh` to initialize your AI tool configurations (e.g., `.agents/`, `.github/copilot/`).
     -   **Unified Configuration**: A single `.agents/` directory is created, with `.gemini` and `.claude` symlinked to it for cross-tool compatibility.
     -   **Individual Symlinks**: Within `.agents/`, the script creates individual symbolic links for each skill, hook, and agent from the shared core.
-    -   **Portability**: This strategy ensures that any new skill added to the shared core is instantly available across all agents without breaking folder-level settings or customization.
+### The Installation Process
+
+1.  **Submodule Initialization**: The script adds `gemini-tools` as a git submodule in the `.sdlc/` directory. This keeps the orchestration logic isolated and easily updatable.
+2.  **Configuration Setup**: It runs `setup-ai-symlinks.sh` to initialize your AI tool configurations.
+    -   **Unified Core**: A single `.agents/` folder is symlinked from the submodule into your project root.
+    -   **Tool Discovery**: Symlinks for `.gemini`, `.claude`, and `.github/copilot` are created pointing to `.agents/`, ensuring all tools share the same configuration, skills, and hooks.
 3.  **Project Container**: A `projects/` directory is created to house isolated, task-specific workspaces managed by the orchestrator.
 4.  **Security Hooks**: Local git hooks are configured to run security scans and synchronization checks.
 
@@ -56,35 +61,28 @@ After installation, your project directory will contain the following artifacts:
 ```text
 .
 ├── .sdlc/                      # The core "Intelligence" (Git Submodule)
-│   ├── .shared-ai/             # Shared skills, hooks, and agents
+│   ├── .agents/                # Unified skills, hooks, and settings
 │   ├── setup-ai-symlinks.sh    # The tool-agnostic setup engine
 │   └── ...
-├── .agents/                    # Unified AI agent configuration
-│   ├── skills/                 # Symlinks to individual shared skills
-│   └── hooks/                  # Symlinks to individual shared hooks
+├── .agents/                    # Symlink to .sdlc/.agents/
 ├── .gemini/                    # Symlink to .agents/
 ├── .claude/                    # Symlink to .agents/
-├── .github/copilot/            # GitHub Copilot configuration
-│   └── ...
-
+├── .github/copilot/            # Symlink to .agents/
 ├── projects/                   # The "Workbench" for AI-managed tasks
-│   └── {project-name}/         # Isolated project context
-│       ├── documentation/      # Inputs, PRDs, and Tech Plans
-│       ├── WORK_ITEMS.md       # The live roadmap for the project
-│       └── ...
 ```
 
-### Why "Individual Symlinks"?
+### Why a Unified `.agents` Folder?
 
-AI agents have varying levels of support for directory structures and configurations. **Gemini-Tools** solves this by:
--   **Granular Integration**: Symlinking individual files (`skill.md` or `hook.sh`) allows the AI tools to keep their own `settings.json` or tool-specific metadata while still benefiting from a shared skill set.
--   **Zero Latency**: Changes made in the `.sdlc` submodule are instantly reflected in all project tool folders without needing a re-installation or "bridge" update.
+By merging all core logic into a single `.agents` folder and using folder-level symlinks:
+-   **Zero Maintenance**: Any new skill or hook added to the repository is immediately available to all tools without any script updates.
+-   **Consistent Experience**: Your custom `settings.json`, specialized skills, and security hooks are identical across Gemini, Claude, and Copilot.
+-   **Cleaner Root**: Tool-specific folders become simple aliases, keeping your repository root focused and organized.
 
 ## 🔍 Troubleshooting
 
 | Issue | Cause | Solution |
 | :--- | :--- | :--- |
-| **Proxy Out of Sync** | Submodule updated but proxies are old. | Re-run `bash .sdlc/setup-ai-symlinks.sh` to refresh the proxy files. |
+| **Out of Sync** | Submodule updated but links are broken. | Re-run `bash .sdlc/setup-ai-symlinks.sh` to refresh the symlinks. |
 | **Worktree Conflicts** | Attempting to add a worktree for a branch that is already checked out. | The orchestrator handles this, but if manual intervention is needed, use `git worktree list` and `git worktree remove`. |
 | **Context Overflow** | Project documents are extremely large. | Use the `context-manager` skill to summarize and trim irrelevant sections. |
 | **Missing Tasks** | `WORK_ITEMS.md` is out of sync. | Run the `implementation-planner` again to regenerate the roadmap based on current code state. |
@@ -92,4 +90,4 @@ AI agents have varying levels of support for directory structures and configurat
 
 ## 🤝 Contributing
 
-This system is designed to be modular. You can add new specialized skills to `.shared-ai/skills/` and they will be instantly available across all your AI agents.
+This system is designed to be modular. You can add new specialized skills to `.agents/skills/` and they will be instantly available across all your AI agents.
