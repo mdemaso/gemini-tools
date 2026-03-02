@@ -5,20 +5,42 @@ set -e
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 CURRENT_DIR="$(pwd)"
 
-# Calculate REL_BASE relative to the current project root
-python_rel_path() {
-    T_PATH="$1" C_PATH="$2" python3 -c "import os; print(os.path.relpath(os.environ['T_PATH'], os.environ['C_PATH']))"
+# Calculate relative path from $2 to $1 using pure shell
+get_relative_path() {
+    local target="$1"
+    local current="$2"
+    local common_part="$current"
+    local result=""
+
+    # Remove trailing slashes
+    target="${target%/}"
+    current="${current%/}"
+    common_part="${common_part%/}"
+
+    if [[ "$target" == "$current" ]]; then
+        echo "."
+        return
+    fi
+
+    while [[ "${target#$common_part}" == "$target" && "$common_part" != "/" ]]; do
+        common_part=$(dirname "$common_part")
+        result="../$result"
+    done
+
+    local forward_part="${target#$common_part}"
+    forward_part="${forward_part#/}"
+
+    if [[ -n "$result" && -n "$forward_part" ]]; then
+        echo "${result}${forward_part}"
+    elif [[ -n "$result" ]]; then
+        echo "${result%/}"
+    else
+        echo "${forward_part:-.}"
+    fi
 }
 
-# Portable relative path calculation (macOS compatible)
-if command -v python3 &> /dev/null; then
-    REL_BASE=$(python_rel_path "$SCRIPT_DIR" "$CURRENT_DIR")
-elif [[ "$OSTYPE" == "linux-gnu"* ]] && realpath --version &>/dev/null; then
-    REL_BASE=$(realpath --relative-to="$CURRENT_DIR" "$SCRIPT_DIR")
-else
-    # Fallback to .sdlc if we are running in a project root
-    REL_BASE=".sdlc"
-fi
+# Portable relative path calculation
+REL_BASE=$(get_relative_path "$SCRIPT_DIR" "$CURRENT_DIR")
 
 echo "🔧 Tools Base: $REL_BASE"
 
