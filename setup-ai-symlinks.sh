@@ -57,15 +57,33 @@ if [[ "$REL_BASE" != "." ]]; then
     ln -s "$REL_BASE/.agents" ".agents"
 fi
 
-# 2. Link tool discovery folders (.gemini, .claude) to .agents
-if [ -d ".agents" ]; then
-    echo "🔗 Linking tool discovery folders (.gemini, .claude) -> .agents"
-    ln -sf ".agents" ".gemini"
-    ln -sf ".agents" ".claude"
+# 2. Link only settings.json into tool-specific folders
+# This avoids skill conflicts since agents scan both .agents and tool-specific folders
+setup_tool_settings() {
+    local target_folder="$1"
+    if [ -d ".agents" ]; then
+        echo "📂 Setting up tool-specific settings for $target_folder..."
 
-    echo "🔗 Linking .github/copilot -> .agents"
-    mkdir -p .github
-    ln -sf "../.agents" ".github/copilot"
-fi
+        # Remove if it's a symlink (old strategy)
+        if [ -L "$target_folder" ]; then
+            rm "$target_folder"
+        fi
 
-echo "✅ AI configurations linked successfully."
+        mkdir -p "$target_folder"
+
+        # Calculate depth for the symlink back to .agents/settings.json
+        local depth=1
+        [[ "$target_folder" == *"/"* ]] && depth=2
+        local to_agents=""
+        for ((i=0; i<$depth; i++)); do to_agents="../${to_agents}"; done
+
+        ln -sf "${to_agents}.agents/settings.json" "$target_folder/settings.json"
+    fi
+}
+
+setup_tool_settings ".gemini"
+setup_tool_settings ".claude"
+setup_tool_settings ".github/copilot"
+
+echo "✅ AI configurations linked successfully (settings only)."
+
