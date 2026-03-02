@@ -25,8 +25,8 @@ if [ ! -f ".gemini/settings.json" ]; then
     cp "$SUBMODULE_DIR/.gemini/settings.json" .gemini/
 fi
 
-# 3. Run the symlink setup script from the submodule
-echo "🔗 Setting up AI agent symlinks..."
+# 3. Run the proxy setup script from the submodule
+echo "🔗 Setting up AI agent proxy files..."
 bash "$SUBMODULE_DIR/setup-ai-symlinks.sh"
 
 # 4. Ensure a local projects folder exists

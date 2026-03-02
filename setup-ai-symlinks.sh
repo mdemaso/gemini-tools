@@ -10,17 +10,16 @@ python_rel_path() {
     python3 -c "import os; print(os.path.relpath('$1', '$2'))"
 }
 
-# Try to calculate REL_BASE
+# Calculate REL_BASE
 if command -v python3 &> /dev/null; then
     REL_BASE=$(python_rel_path "$SCRIPT_DIR" "$CURRENT_DIR")
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     REL_BASE=$(realpath --relative-to="$CURRENT_DIR" "$SCRIPT_DIR")
 else
-    # Fallback: if we are running from the root and script is in .sdlc
     if [[ "$SCRIPT_DIR" == *"$CURRENT_DIR/.sdlc"* ]]; then
         REL_BASE=".sdlc"
     else
-        echo "Error: Could not calculate relative path. Please install python3 or coreutils."
+        echo "Error: Could not calculate relative path."
         exit 1
     fi
 fi
@@ -28,51 +27,72 @@ fi
 SHARED_DIR_NAME=".shared-ai"
 SHARED_DIR_PATH="${REL_BASE}/${SHARED_DIR_NAME}"
 
-echo "🔧 Using base: $REL_BASE"
+echo "🔧 Using SDLC Tools Base: $REL_BASE"
 
-# Create shared base directories if they don't exist
-mkdir -p "$SHARED_DIR_PATH/skills" "$SHARED_DIR_PATH/agents" "$SHARED_DIR_PATH/commands" "$SHARED_DIR_PATH/hooks"
-
-# Helper function to create symlinks with correct relative paths
-create_symlinks() {
+# Helper to create proxy files
+create_proxies() {
     local target_base="$1"
-    shift
-    local subdirs=("$@")
-
-    echo "📂 Setting up $target_base..."
-    mkdir -p "$target_base"
+    local category="$2" # "skills", "hooks", "agents", "commands"
     
-    # Calculate relative prefix to get back to the project root from target_base
-    local to_root="../"
-    local slashes="${target_base//[^\/]}"
-    for ((i=0; i<${#slashes}; i++)); do
-        to_root="../${to_root}"
-    done
+    echo "📂 Setting up proxies for $target_base/$category..."
+    mkdir -p "$target_base/$category"
+    
+    local source_dir="${SHARED_DIR_PATH}/${category}"
+    if [ ! -d "$source_dir" ]; then return; fi
 
-    for dir in "${subdirs[@]}"; do
-        local link_path="$target_base/$dir"
-        local target_path="${to_root}${REL_BASE}/${SHARED_DIR_NAME}/${dir}"
+    # Calculate depth to get back to root from target_base/category
+    local depth=1
+    local slashes="${target_base//[^\/]}"
+    depth=$((${#slashes} + 2)) # +1 for target_base, +1 for category
+    
+    local to_root=""
+    for ((i=0; i<$depth; i++)); do to_root="../${to_root}"; done
+
+    for item in "$source_dir"/*; do
+        [ -e "$item" ] || continue
+        local name=$(basename "$item")
         
-        echo "  🔗 Linking $dir..."
-        # If symlink doesn't exist, create it
-        if [ ! -e "$link_path" ] && [ ! -L "$link_path" ]; then
-            ln -s "$target_path" "$link_path"
-        elif [ -L "$link_path" ]; then
-            # Symlink already exists, update it
-            ln -sf "$target_path" "$link_path"
-        else
-            echo "  ⚠️ Warning: $link_path exists and is not a symlink. Skipping."
-        fi
+        case "$category" in
+            hooks)
+                if [[ "$name" == *.sh ]]; then
+                    local proxy_path="${target_base}/${category}/${name}"
+                    echo "  🔗 Creating script wrapper: $name"
+                    echo "#!/usr/bin/env bash" > "$proxy_path"
+                    echo "# Proxy for shared SDLC hook" >> "$proxy_path"
+                    echo "exec \"\$(dirname \"\$0\")/${to_root}${REL_BASE}/${SHARED_DIR_NAME}/${category}/${name}\" \"\$@\"" >> "$proxy_path"
+                    chmod +x "$proxy_path"
+                fi
+                ;;
+            skills)
+                if [ -d "$item" ]; then
+                    local proxy_path="${target_base}/${category}/${name}.md"
+                    echo "  🔗 Creating skill bridge: $name"
+                    echo "# Bridge: ${name}" > "$proxy_path"
+                    echo "This is a bridge to the shared AI skill instructions." >> "$proxy_path"
+                    echo "To use this skill, you MUST read and follow the full instructions at:" >> "$proxy_path"
+                    echo "${to_root}${REL_BASE}/${SHARED_DIR_NAME}/${category}/${name}/SKILL.md" >> "$proxy_path"
+                fi
+                ;;
+            agents|commands)
+                # Future expansion for agent/command definitions
+                ;;
+        esac
     done
 }
 
-# Set up for Gemini CLI
-create_symlinks ".gemini" "skills" "agents" "commands" "hooks"
+# Process each AI tool
+for tool_dir in ".gemini" ".claude" ".github/copilot"; do
+    # Remove old symlinks if they exist to prevent conflicts
+    for cat in "skills" "hooks" "agents" "commands"; do
+        if [ -L "$tool_dir/$cat" ]; then
+            echo "🗑 Removing old symlink: $tool_dir/$cat"
+            rm "$tool_dir/$cat"
+        fi
+    done
 
-# Set up for Claude Code
-create_symlinks ".claude" "skills" "agents" "commands" "hooks"
+    # Create new proxy files
+    create_proxies "$tool_dir" "skills"
+    create_proxies "$tool_dir" "hooks"
+done
 
-# Set up for Github Copilot / Codex
-create_symlinks ".github/copilot" "skills" "agents" "commands" "hooks"
-
-echo "✅ AI agent configurations symlinked successfully."
+echo "✅ AI agent proxy files generated successfully."

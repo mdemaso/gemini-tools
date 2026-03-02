@@ -10,6 +10,7 @@ Gemini-Tools is a high-performance, standardized framework designed to automate 
 - **Automated TDD**: Generates failing test suites based on requirements *before* implementation starts.
 - **Context Optimization**: Dynamically trims and summarizes project context to keep AI agents focused and reduce token usage.
 - **Human-in-the-Loop**: A formal review gate for user approval of code changes and documentation updates.
+- **Hybrid Proxy System**: Uses real wrapper scripts and bridge files for cross-agent compatibility instead of brittle symlinks.
 
 ## 🛠 Installation
 
@@ -22,7 +23,7 @@ curl -sSL https://raw.githubusercontent.com/mdemaso/gemini-tools/main/install.sh
 This will:
 1. Add `gemini-tools` as a git submodule in `.sdlc/`.
 2. Ensure a local `projects/` directory exists at your repository root.
-3. Set up the necessary symlinks for Gemini, Claude, and Copilot.
+3. Generate **Proxy Files** (Scripts and Markdown bridges) for Gemini, Claude, and Copilot.
 4. Initialize the base configuration.
 
 ## 📖 How to Use
