@@ -49,14 +49,14 @@ echo "🔧 Tools Base: $REL_BASE"
 setup_tool_proxies() {
     local target_folder="$1" # e.g., .gemini
     local source_folder="${SCRIPT_DIR}/${target_folder}"
+    local is_internal=false
 
-    # If the source and target folders are the same, we are likely running in the tool repo itself
+    # Check if we are running inside the gemini-tools repo itself
     if [ -d "$source_folder" ] && [ -d "$target_folder" ] && [ "$source_folder" -ef "$target_folder" ]; then
-        echo "⏭ Skipping $target_folder (source and target are the same)"
-        return
+        is_internal=true
     fi
 
-    echo "📂 Setting up real proxy files for $target_folder..."
+    echo "📂 Setting up AI proxies for $target_folder..."
 
     # If the target exists as a symlink, remove it
     if [ -L "$target_folder" ]; then
@@ -67,26 +67,66 @@ setup_tool_proxies() {
     # Create real directories
     mkdir -p "$target_folder/skills" "$target_folder/hooks"
 
-    # Copy Bridge/Wrapper files from the submodule repo to the parent repo
-    # We use -n to not overwrite settings.json if it exists, but -f for skills/hooks
-    if [ -f "$source_folder/settings.json" ]; then
+    # 1. Sync Settings (if they exist in source)
+    if [ -f "$source_folder/settings.json" ] && [ "$is_internal" = false ]; then
         cp -n "$source_folder/settings.json" "$target_folder/" || true
     fi
 
-    # Process Skills
-    if [ -d "$source_folder/skills" ]; then
-        for f in "$source_folder/skills"/*.md; do
-            [ -e "$f" ] || continue
-            sed "s|\\.shared-ai|$REL_BASE/.shared-ai|g" "$f" > "$target_folder/skills/$(basename "$f")"
+    # 2. Process Skills (Source of truth is .shared-ai/skills)
+    local shared_skills_dir="${SCRIPT_DIR}/.shared-ai/skills"
+    if [ -d "$shared_skills_dir" ]; then
+        for skill_dir in "$shared_skills_dir"/*; do
+            [ -d "$skill_dir" ] || continue
+            local skill_name=$(basename "$skill_dir")
+            local target_bridge="$target_folder/skills/${skill_name}.md"
+            
+            # Calculate the relative path back to the shared skill
+            # For .gemini/.claude it is ../../
+            # For .github/copilot it is ../../../
+            local depth=2
+            [[ "$target_folder" == *"/"* ]] && depth=3
+            
+            local to_shared=""
+            for ((i=0; i<$depth; i++)); do to_shared="../${to_shared}"; done
+            
+            local shared_path="${to_shared}${REL_BASE}/.shared-ai/skills/${skill_name}/SKILL.md"
+            # Remove redundant ./ if REL_BASE is .
+            shared_path=$(echo "$shared_path" | sed 's|/\./|/|g')
+
+            echo "  🔗 Bridging skill: $skill_name"
+            cat <<EOF > "$target_bridge"
+# Bridge: ${skill_name}
+This is a bridge to the shared AI skill instructions.
+To use this skill, you MUST read and follow the full instructions at:
+${shared_path}
+EOF
         done
     fi
 
-    # Process Hooks
-    if [ -d "$source_folder/hooks" ]; then
-        for f in "$source_folder/hooks"/*.sh; do
-            [ -e "$f" ] || continue
-            sed "s|\\.shared-ai|$REL_BASE/.shared-ai|g" "$f" > "$target_folder/hooks/$(basename "$f")"
-            chmod +x "$target_folder/hooks/$(basename "$f")"
+    # 3. Process Hooks (Source of truth is .shared-ai/hooks)
+    local shared_hooks_dir="${SCRIPT_DIR}/.shared-ai/hooks"
+    if [ -d "$shared_hooks_dir" ]; then
+        for hook_file in "$shared_hooks_dir"/*.sh; do
+            [ -f "$hook_file" ] || continue
+            local hook_name=$(basename "$hook_file")
+            local target_hook="$target_folder/hooks/${hook_name}"
+            
+            local depth=2
+            [[ "$target_folder" == *"/"* ]] && depth=3
+            
+            local to_shared=""
+            for ((i=0; i<$depth; i++)); do to_shared="../${to_shared}"; done
+            
+            local shared_path="${to_shared}${REL_BASE}/.shared-ai/hooks/${hook_name}"
+            shared_path=$(echo "$shared_path" | sed 's|/\./|/|g')
+
+            echo "  🔗 Wrapping hook: $hook_name"
+            cat <<EOF > "$target_hook"
+#!/usr/bin/env bash
+# Wrapper for shared SDLC hook
+exec "\$(dirname "\$0")/${shared_path}" "\$@"
+EOF
+            chmod +x "$target_hook"
         done
     fi
 }
