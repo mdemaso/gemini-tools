@@ -69,7 +69,6 @@ After installation, your project directory will contain the following artifacts:
 │       ├── documentation/      # Inputs, PRDs, and Tech Plans
 │       ├── WORK_ITEMS.md       # The live roadmap for the project
 │       └── ...
-└── .gitignore                  # Automatically updated to ignore .sdlc/ and projects/
 ```
 
 ### Why "Hybrid Proxies"?

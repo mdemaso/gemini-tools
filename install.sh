@@ -41,19 +41,6 @@ if [ ! -d "projects" ]; then
     mkdir projects
 fi
 
-# 4. Add .sdlc to .gitignore if not already present
-...
-
-if [ -f ".gitignore" ]; then
-    if ! grep -q "^.sdlc$" .gitignore; then
-        echo "🙈 Adding .sdlc to .gitignore..."
-        echo -e "\n# Gemini-Tools Submodule\n.sdlc" >> .gitignore
-    fi
-else
-    echo "🙈 Creating .gitignore and adding .sdlc..."
-    echo -e "# Gemini-Tools Submodule\n.sdlc" > .gitignore
-fi
-
 echo ""
 echo "✅ Installation Complete!"
 
