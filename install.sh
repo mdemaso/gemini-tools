@@ -9,7 +9,6 @@ REPO_URL="https://github.com/mdemaso/gemini-tools.git"
 SUBMODULE_DIR=".sdlc"
 
 echo "🚀 Installing Gemini/Claude SDLC Orchestration System as Submodule..."
-
 # 1. Add as a submodule
 if [ -d "$SUBMODULE_DIR" ]; then
     echo "Info: $SUBMODULE_DIR already exists. Updating..."
@@ -18,24 +17,19 @@ else
     git submodule add --force "$REPO_URL" "$SUBMODULE_DIR"
 fi
 
-# 2. Copy base configuration for Gemini if missing
-mkdir -p .gemini
-if [ ! -f ".gemini/settings.json" ]; then
-    echo "⚙️ Copying base configuration..."
-    cp "$SUBMODULE_DIR/.gemini/settings.json" .gemini/
-fi
-
-# 3. Run the proxy setup script from the submodule
-echo "🔗 Setting up AI agent proxy files..."
+# 2. Run the folder-level symlink setup script from the submodule
+echo "🔗 Symlinking AI config folders..."
 bash "$SUBMODULE_DIR/setup-ai-symlinks.sh"
 
-# 4. Ensure a local projects folder exists
+# 3. Ensure a local projects folder exists
 if [ ! -d "projects" ]; then
     echo "📁 Creating local projects folder..."
     mkdir projects
 fi
 
-# 6. Add .sdlc to .gitignore if not already present
+# 4. Add .sdlc to .gitignore if not already present
+...
+
 if [ -f ".gitignore" ]; then
     if ! grep -q "^.sdlc$" .gitignore; then
         echo "🙈 Adding .sdlc to .gitignore..."
