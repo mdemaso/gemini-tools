@@ -1,4 +1,4 @@
 # Bridge: implementation-planner
 This is a bridge to the shared AI skill instructions.
 To use this skill, you MUST read and follow the full instructions at:
-../../.sdlc/.shared-ai/skills/implementation-planner/SKILL.md
+../../.shared-ai/skills/implementation-planner/SKILL.md

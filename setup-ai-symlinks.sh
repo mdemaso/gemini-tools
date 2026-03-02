@@ -77,7 +77,7 @@ setup_tool_proxies() {
     if [ -d "$source_folder/skills" ]; then
         for f in "$source_folder/skills"/*.md; do
             [ -e "$f" ] || continue
-            cp -f "$f" "$target_folder/skills/"
+            sed "s|\\.shared-ai|$REL_BASE/.shared-ai|g" "$f" > "$target_folder/skills/$(basename "$f")"
         done
     fi
 
@@ -85,7 +85,7 @@ setup_tool_proxies() {
     if [ -d "$source_folder/hooks" ]; then
         for f in "$source_folder/hooks"/*.sh; do
             [ -e "$f" ] || continue
-            cp -f "$f" "$target_folder/hooks/"
+            sed "s|\\.shared-ai|$REL_BASE/.shared-ai|g" "$f" > "$target_folder/hooks/$(basename "$f")"
             chmod +x "$target_folder/hooks/$(basename "$f")"
         done
     fi
