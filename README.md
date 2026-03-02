@@ -8,6 +8,7 @@ Gemini-Tools is a high-performance, standardized framework designed to automate 
 - **Parallel Multi-Agent Execution**: Utilizes **Git Worktrees** to run multiple AI agents or developers in isolated, conflict-free environments.
 - **Self-Healing Documentation**: Automatically updates PRDs and Tech Plans when intentional code deviations occur, maintaining a "Living Document" state.
 - **Automated TDD**: Generates failing test suites based on requirements *before* implementation starts.
+- **Documentation Engine**: Automates the setup of professional MkDocs sites with Material theme, Mermaid diagrams, and interactive pan/zoom.
 - **Context Optimization**: Dynamically trims and summarizes project context to keep AI agents focused and reduce token usage.
 - **Human-in-the-Loop**: A formal review gate for user approval of code changes and documentation updates.
 - **Hybrid Proxy System**: Uses real wrapper scripts and bridge files for cross-agent compatibility instead of brittle symlinks.
@@ -42,6 +43,7 @@ curl -sSL https://raw.githubusercontent.com/mdemaso/gemini-tools/main/install.sh
 
 3. **Lifecycle Management**:
    Once a project is selected or created, the orchestrator will automatically:
+   - **Initialize high-quality documentation** using the `doc-setup` skill.
    - Generate missing `PRD.md` or `TECH_PLAN.md`.
    - Create a dependency-aware implementation guide.
    - Execute tasks in parallel using isolated Git Worktrees.
