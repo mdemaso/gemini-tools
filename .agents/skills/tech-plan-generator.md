@@ -1,0 +1,1 @@
+../../.shared-ai/skills/tech-plan-generator/SKILL.md

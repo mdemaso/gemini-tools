@@ -1,0 +1,1 @@
+../../.shared-ai/skills/prd-generator/SKILL.md

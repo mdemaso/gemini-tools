@@ -1,0 +1,1 @@
+../../.shared-ai/skills/doc-setup/SKILL.md

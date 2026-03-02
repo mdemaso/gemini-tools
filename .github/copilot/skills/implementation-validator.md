@@ -1,0 +1,1 @@
+../../../.shared-ai/skills/implementation-validator/SKILL.md

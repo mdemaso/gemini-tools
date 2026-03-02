@@ -1,0 +1,1 @@
+../../.shared-ai/skills/test-generator/SKILL.md

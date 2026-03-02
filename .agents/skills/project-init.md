@@ -1,0 +1,1 @@
+../../.shared-ai/skills/project-init/SKILL.md

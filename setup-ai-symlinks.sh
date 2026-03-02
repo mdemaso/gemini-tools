@@ -45,7 +45,7 @@ REL_BASE=$(get_relative_path "$SCRIPT_DIR" "$CURRENT_DIR")
 echo "🔧 Tools Base: $REL_BASE"
 
 # Helper to create symlinks for individual items
-# target_folder: e.g. .gemini
+# target_folder: e.g. .agents
 # category: e.g. skills, hooks, agents, commands
 setup_category_symlinks() {
     local target_folder="$1"
@@ -59,7 +59,7 @@ setup_category_symlinks() {
     mkdir -p "$target_dir"
 
     # Calculate depth to get back to root from target_dir
-    local depth=2 # base depth for .gemini/skills
+    local depth=2 # base depth for .agents/skills
     [[ "$target_folder" == *"/"* ]] && depth=3 # e.g. .github/copilot/skills
 
     local to_root=""
@@ -84,11 +84,10 @@ setup_category_symlinks() {
 }
 
 setup_tool_configs() {
-    local target_folder="$1" # e.g., .gemini
+    local target_folder="$1" # e.g., .agents
     local source_folder="${SCRIPT_DIR}/${target_folder}"
 
     # If the source and target folders are the same, we are likely running in the tool repo itself
-    # In that case, we still want to link from .shared-ai to the local .gemini etc.
     local is_internal=false
     if [ -d "$source_folder" ] && [ -d "$target_folder" ] && [ "$source_folder" -ef "$target_folder" ]; then
         is_internal=true
@@ -123,9 +122,18 @@ setup_tool_configs() {
 if [ -n "$1" ]; then
     setup_tool_configs "$1"
 else
-    setup_tool_configs ".gemini"
-    setup_tool_configs ".claude"
+    # 1. Setup the primary .agents folder
+    setup_tool_configs ".agents"
+    
+    # 2. Setup Copilot if it exists
     setup_tool_configs ".github/copilot"
+
+    # 3. Create symlinks for tool-specific discovery
+    if [ -d ".agents" ]; then
+        echo "🔗 Linking tool-specific discovery folders (.gemini, .claude)..."
+        ln -sf ".agents" ".gemini"
+        ln -sf ".agents" ".claude"
+    fi
 fi
 
-echo "✅ AI agent configurations linked successfully via individual symlinks."
+echo "✅ AI agent configurations linked successfully."

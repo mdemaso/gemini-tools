@@ -1,0 +1,1 @@
+../../../.shared-ai/hooks/security-scan.sh

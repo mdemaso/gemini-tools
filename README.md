@@ -24,8 +24,9 @@ curl -sSL https://raw.githubusercontent.com/mdemaso/gemini-tools/main/install.sh
 ### The Installation Process
 
 1.  **Submodule Initialization**: The script adds `gemini-tools` as a git submodule in the `.sdlc/` directory. This keeps the orchestration logic isolated and easily updatable.
-2.  **Configuration Setup**: It runs `setup-ai-symlinks.sh` to initialize your AI tool folders (e.g., `.gemini/`, `.claude/`, `.github/copilot/`).
-    -   **Individual Symlinks**: Instead of whole-folder symlinks, the script creates individual symbolic links for each skill, hook, and agent. 
+2.  **Configuration Setup**: It runs `setup-ai-symlinks.sh` to initialize your AI tool configurations (e.g., `.agents/`, `.github/copilot/`).
+    -   **Unified Configuration**: A single `.agents/` directory is created, with `.gemini` and `.claude` symlinked to it for cross-tool compatibility.
+    -   **Individual Symlinks**: Within `.agents/`, the script creates individual symbolic links for each skill, hook, and agent from the shared core.
     -   **Portability**: This strategy ensures that any new skill added to the shared core is instantly available across all agents without breaking folder-level settings or customization.
 3.  **Project Container**: A `projects/` directory is created to house isolated, task-specific workspaces managed by the orchestrator.
 4.  **Security Hooks**: Local git hooks are configured to run security scans and synchronization checks.
@@ -58,14 +59,14 @@ After installation, your project directory will contain the following artifacts:
 │   ├── .shared-ai/             # Shared skills, hooks, and agents
 │   ├── setup-ai-symlinks.sh    # The tool-agnostic setup engine
 │   └── ...
-├── .gemini/                    # Gemini CLI configuration
+├── .agents/                    # Unified AI agent configuration
 │   ├── skills/                 # Symlinks to individual shared skills
 │   └── hooks/                  # Symlinks to individual shared hooks
-├── .claude/                    # Claude Code configuration
-│   ├── skills/                 # Symlinks to individual shared skills
-│   └── hooks/                  # Symlinks to individual shared hooks
+├── .gemini/                    # Symlink to .agents/
+├── .claude/                    # Symlink to .agents/
 ├── .github/copilot/            # GitHub Copilot configuration
 │   └── ...
+
 ├── projects/                   # The "Workbench" for AI-managed tasks
 │   └── {project-name}/         # Isolated project context
 │       ├── documentation/      # Inputs, PRDs, and Tech Plans

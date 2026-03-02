@@ -1,0 +1,1 @@
+../../../.shared-ai/hooks/sync-and-link.sh

@@ -1,0 +1,1 @@
+../../../.shared-ai/skills/example-skill/SKILL.md

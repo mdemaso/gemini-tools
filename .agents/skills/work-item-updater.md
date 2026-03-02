@@ -1,0 +1,1 @@
+../../.shared-ai/skills/work-item-updater/SKILL.md
