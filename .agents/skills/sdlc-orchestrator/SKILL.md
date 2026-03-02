@@ -43,3 +43,6 @@ This orchestrator manages high-level SDLC states and isolation for parallel mult
 
 4.  **Phase 4: Milestone Cleanup**
     *   Perform a final sync of all documents and a project-wide build.
+
+5.  **Phase 5: Retrospective**
+    *   Invoke the `retro` skill to summarize the session and improve the system.
