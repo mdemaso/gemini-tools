@@ -1,4 +1,4 @@
 # Bridge: test-generator
 This is a bridge to the shared AI skill instructions.
 To use this skill, you MUST read and follow the full instructions at:
-../../.shared-ai/skills/test-generator/SKILL.md
+../../.sdlc/.shared-ai/skills/test-generator/SKILL.md
