@@ -9,7 +9,14 @@ REPO_URL="https://github.com/mdemaso/gemini-tools.git"
 SUBMODULE_DIR=".sdlc"
 
 echo "🚀 Installing Gemini/Claude SDLC Orchestration System as Submodule..."
-# 1. Add as a submodule
+
+# 1. Ensure we are in a git repository
+if [ ! -d ".git" ]; then
+    echo "📦 Initializing a new git repository..."
+    git init
+fi
+
+# 2. Add as a submodule
 if [ -d "$SUBMODULE_DIR" ]; then
     echo "Info: $SUBMODULE_DIR already exists. Updating..."
     git submodule update --init --recursive
