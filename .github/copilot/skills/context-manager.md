@@ -1,1 +1,0 @@
-../../../.shared-ai/skills/context-manager/SKILL.md
