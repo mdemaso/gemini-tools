@@ -24,9 +24,9 @@ curl -sSL https://raw.githubusercontent.com/mdemaso/gemini-tools/main/install.sh
 ### The Installation Process
 
 1.  **Submodule Initialization**: The script adds `gemini-tools` as a git submodule in the `.sdlc/` directory. This keeps the orchestration logic isolated and easily updatable.
-2.  **Hybrid Proxy Setup**: It runs `setup-ai-symlinks.sh` to generate **Real Proxy Files** in your project root (e.g., `.gemini/`, `.claude/`, `.github/copilot/`). 
-    -   Unlike brittle symlinks, these are actual files (shell script wrappers and Markdown bridges) that point back to the central intelligence in the submodule.
-    -   This ensures maximum compatibility with AI agents that may not follow symlinks or require specific file structures.
+2.  **Configuration Setup**: It runs `setup-ai-symlinks.sh` to initialize your AI tool folders (e.g., `.gemini/`, `.claude/`, `.github/copilot/`).
+    -   **Individual Symlinks**: Instead of whole-folder symlinks, the script creates individual symbolic links for each skill, hook, and agent. 
+    -   **Portability**: This strategy ensures that any new skill added to the shared core is instantly available across all agents without breaking folder-level settings or customization.
 3.  **Project Container**: A `projects/` directory is created to house isolated, task-specific workspaces managed by the orchestrator.
 4.  **Security Hooks**: Local git hooks are configured to run security scans and synchronization checks.
 
@@ -59,11 +59,11 @@ After installation, your project directory will contain the following artifacts:
 │   ├── setup-ai-symlinks.sh    # The tool-agnostic setup engine
 │   └── ...
 ├── .gemini/                    # Gemini CLI configuration
-│   ├── skills/                 # Markdown bridges to shared skills
-│   └── hooks/                  # Script wrappers for shared hooks
+│   ├── skills/                 # Symlinks to individual shared skills
+│   └── hooks/                  # Symlinks to individual shared hooks
 ├── .claude/                    # Claude Code configuration
-│   ├── skills/                 # Markdown bridges to shared skills
-│   └── hooks/                  # Script wrappers for shared hooks
+│   ├── skills/                 # Symlinks to individual shared skills
+│   └── hooks/                  # Symlinks to individual shared hooks
 ├── .github/copilot/            # GitHub Copilot configuration
 │   └── ...
 ├── projects/                   # The "Workbench" for AI-managed tasks
@@ -73,11 +73,11 @@ After installation, your project directory will contain the following artifacts:
 │       └── ...
 ```
 
-### Why "Hybrid Proxies"?
+### Why "Individual Symlinks"?
 
-AI agents have varying levels of support for symlinks and directory structures. **Gemini-Tools** solves this by generating:
--   **Markdown Bridges**: Small `.md` files that instruct the AI agent on where to find the full skill definitions in the submodule.
--   **Script Wrappers**: Small `.sh` files that `exec` the shared hooks from the submodule, ensuring consistent behavior across all agents.
+AI agents have varying levels of support for directory structures and configurations. **Gemini-Tools** solves this by:
+-   **Granular Integration**: Symlinking individual files (`skill.md` or `hook.sh`) allows the AI tools to keep their own `settings.json` or tool-specific metadata while still benefiting from a shared skill set.
+-   **Zero Latency**: Changes made in the `.sdlc` submodule are instantly reflected in all project tool folders without needing a re-installation or "bridge" update.
 
 ## 🔍 Troubleshooting
 
