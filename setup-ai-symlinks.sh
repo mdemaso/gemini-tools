@@ -7,13 +7,13 @@ CURRENT_DIR="$(pwd)"
 
 # Calculate REL_BASE relative to the current project root
 python_rel_path() {
-    python3 -c "import os; print(os.path.relpath('$1', '$2'))"
+    T_PATH="$1" C_PATH="$2" python3 -c "import os; print(os.path.relpath(os.environ['T_PATH'], os.environ['C_PATH']))"
 }
 
 # Portable relative path calculation (macOS compatible)
 if command -v python3 &> /dev/null; then
     REL_BASE=$(python_rel_path "$SCRIPT_DIR" "$CURRENT_DIR")
-elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+elif [[ "$OSTYPE" == "linux-gnu"* ]] && realpath --version &>/dev/null; then
     REL_BASE=$(realpath --relative-to="$CURRENT_DIR" "$SCRIPT_DIR")
 else
     # Fallback to .sdlc if we are running in a project root
@@ -27,6 +27,12 @@ echo "🔧 Tools Base: $REL_BASE"
 setup_tool_proxies() {
     local target_folder="$1" # e.g., .gemini
     local source_folder="${SCRIPT_DIR}/${target_folder}"
+
+    # If the source and target folders are the same, we are likely running in the tool repo itself
+    if [ "$(realpath "$source_folder" 2>/dev/null || echo "$source_folder")" = "$(realpath "$target_folder" 2>/dev/null || echo "$target_folder")" ]; then
+        echo "⏭ Skipping $target_folder (source and target are the same)"
+        return
+    fi
 
     echo "📂 Setting up real proxy files for $target_folder..."
 
