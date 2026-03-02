@@ -10,8 +10,15 @@ TOOLS_ROOT="$( cd "$SCRIPT_DIR/../.." && pwd )"
 SETUP_SCRIPT="$TOOLS_ROOT/setup-ai-symlinks.sh"
 
 # 1. Sync from remote
-# We cd into the tools root to ensure git commands run against the tools repository
 echo "🔄 Checking for tool updates..."
+
+# If we are in a parent project that uses the .sdlc submodule
+if [ -d ".sdlc" ] && ([ -d ".sdlc/.git" ] || [ -f ".sdlc/.git" ]); then
+    echo "  📦 Updating .sdlc submodule..."
+    git submodule update --remote --init .sdlc --quiet || true
+fi
+
+# Also sync the tools repo itself if we are inside it or it's standalone
 (
     cd "$TOOLS_ROOT"
     if git remote -v 2>/dev/null | grep -q "gemini-tools.git"; then
