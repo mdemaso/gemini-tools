@@ -21,12 +21,19 @@ if [ -d "$SUBMODULE_DIR" ]; then
     echo "Info: $SUBMODULE_DIR already exists. Updating..."
     git submodule update --init --recursive
 else
+    echo "📦 Adding gemini-tools submodule..."
     git submodule add --force "$REPO_URL" "$SUBMODULE_DIR"
+    git submodule update --init --recursive
 fi
 
-# 2. Run the folder-level symlink setup script from the submodule
-echo "🔗 Symlinking AI config folders..."
-bash "$SUBMODULE_DIR/setup-ai-symlinks.sh"
+# 3. Verify the setup script exists before running
+if [ -f "$SUBMODULE_DIR/setup-ai-symlinks.sh" ]; then
+    echo "🔗 Symlinking AI config folders..."
+    bash "$SUBMODULE_DIR/setup-ai-symlinks.sh"
+else
+    echo "❌ Error: $SUBMODULE_DIR/setup-ai-symlinks.sh not found. Submodule may not have initialized correctly."
+    exit 1
+fi
 
 # 3. Ensure a local projects folder exists
 if [ ! -d "projects" ]; then
