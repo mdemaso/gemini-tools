@@ -10,8 +10,11 @@ python_rel_path() {
     python3 -c "import os; print(os.path.relpath('$1', '$2'))"
 }
 
+# Portable relative path calculation (macOS compatible)
 if command -v python3 &> /dev/null; then
     REL_BASE=$(python_rel_path "$SCRIPT_DIR" "$CURRENT_DIR")
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    REL_BASE=$(realpath --relative-to="$CURRENT_DIR" "$SCRIPT_DIR")
 else
     # Fallback to .sdlc if we are running in a project root
     REL_BASE=".sdlc"
