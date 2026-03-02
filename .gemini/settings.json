@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": ".gemini/hooks/sync-and-link.sh"
+            "command": ".gemini/hooks/sync-and-link.sh .gemini"
           }
         ]
       }

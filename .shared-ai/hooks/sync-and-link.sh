@@ -23,7 +23,7 @@ echo "🔄 Checking for tool updates..."
 # 2. Run the proxy setup script
 if [ -f "$SETUP_SCRIPT" ]; then
     echo "🔗 Verifying AI configurations..."
-    bash "$SETUP_SCRIPT"
+    bash "$SETUP_SCRIPT" "$@"
 else
     echo "Error: setup-ai-symlinks.sh not found at $SETUP_SCRIPT"
     exit 1
