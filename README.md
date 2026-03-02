@@ -1,6 +1,6 @@
 # Gemini-Tools: AI SDLC Orchestration Engine
 
-Gemini-Tools is a high-performance, standardized framework designed to automate the entire Software Development Lifecycle (SDLC) through AI agents. It centralizes specialized knowledge into a "write once, run everywhere" architecture that works across Gemini CLI, Claude Code, and GitHub Copilot.
+Gemini-Tools is a high-performance, standardized framework designed to automate the entire Software Development Lifecycle (SDLC) through AI agents. It centralizes specialized knowledge into a "write once, run everywhere" architecture that provides a unified configuration for Gemini CLI, Claude Code, and other AI agents.
 
 ## 🚀 Key Features
 
@@ -11,7 +11,7 @@ Gemini-Tools is a high-performance, standardized framework designed to automate 
 - **Documentation Engine**: Automates the setup of professional MkDocs sites with Material theme, Mermaid diagrams, and interactive pan/zoom.
 - **Context Optimization**: Dynamically trims and summarizes project context to keep AI agents focused and reduce token usage.
 - **Human-in-the-Loop**: A formal review gate for user approval of code changes and documentation updates.
-- **Unified Configuration**: All tools share a single source of truth via the `.agents/` directory, ensuring consistent behavior across all agents.
+- **Unified Hub**: All AI agents share a single source of truth via the `.agents/` directory, ensuring consistent behavior across your entire toolchain.
 
 ## 🛠 Installation
 
@@ -24,7 +24,7 @@ curl -sSL https://raw.githubusercontent.com/mdemaso/gemini-tools/main/install.sh
 ### The Installation Process
 
 1.  **Submodule Initialization**: The script adds `gemini-tools` as a git submodule in the `.sdlc/` directory. This keeps the orchestration logic isolated and easily updatable.
-2.  **Configuration Setup**: It runs `setup-ai-symlinks.sh` to initialize your AI tool configuration.
+2.  **Configuration Setup**: It runs `setup-ai-symlinks.sh` to initialize the unified AI configuration.
     -   **Unified Core**: A single `.agents/` folder is symlinked from the submodule into your project root. This ensures all tools share the same configuration, skills, and hooks.
 3.  **Project Container**: A `projects/` directory is created to house isolated, task-specific workspaces managed by the orchestrator.
 4.  **Security Hooks**: Local git hooks are configured to run security scans and synchronization checks.
@@ -32,7 +32,7 @@ curl -sSL https://raw.githubusercontent.com/mdemaso/gemini-tools/main/install.sh
 ## 📖 How to Use
 
 1. **Start the Orchestrator**:
-   Simply say:
+   Simply ask your AI agent to:
    > "Run the sdlc-orchestrator."
 
 2. **Project Selection**:
@@ -58,15 +58,15 @@ After installation, your project directory will contain the following artifacts:
 │   ├── setup-ai-symlinks.sh    # The tool-agnostic setup engine
 │   └── ...
 ├── .agents/                    # Symlink to .sdlc/.agents/
-├── projects/                   # The "Workbench" for AI-managed tasks
+└── projects/                   # The "Workbench" for AI-managed tasks
 ```
 
 ### Why a Unified `.agents` Folder?
 
-By merging all core logic into a single `.agents` folder and using folder-level symlinks:
--   **Zero Maintenance**: Any new skill or hook added to the repository is immediately available to all tools without any script updates.
--   **Consistent Experience**: Your custom `settings.json`, specialized skills, and security hooks are identical across Gemini, Claude, and Copilot.
--   **Cleaner Root**: No more tool-specific folders or aliases, keeping your repository root focused and organized.
+By merging all core logic into a single hub and using folder-level symlinks:
+-   **Zero Maintenance**: Any new skill or hook added to the repository is immediately available to all agents without any script updates.
+-   **Consistent Experience**: Your custom `settings.json`, specialized skills, and security hooks are identical across all supported AI tools.
+-   **Cleaner Root**: No more tool-specific hidden folders or scattered aliases, keeping your repository root focused and organized.
 
 ## 🔍 Troubleshooting
 
