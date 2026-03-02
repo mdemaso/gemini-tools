@@ -57,4 +57,11 @@ if [[ "$REL_BASE" != "." ]]; then
     ln -s "$REL_BASE/.agents" ".agents"
 fi
 
+# 2. Link tool discovery folders (.gemini, .claude) to .agents
+if [ -d ".agents" ]; then
+    echo "🔗 Linking tool discovery folders (.gemini, .claude) -> .agents"
+    ln -sf ".agents" ".gemini"
+    ln -sf ".agents" ".claude"
+fi
+
 echo "✅ AI configurations linked successfully."
