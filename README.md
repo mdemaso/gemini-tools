@@ -20,11 +20,14 @@ You can install this system into any existing codebase with a single command:
 curl -sSL https://raw.githubusercontent.com/mdemaso/gemini-tools/main/install.sh | bash
 ```
 
-This will:
-1. Add `gemini-tools` as a git submodule in `.sdlc/`.
-2. Ensure a local `projects/` directory exists at your repository root.
-3. Generate **Proxy Files** (Scripts and Markdown bridges) for Gemini, Claude, and Copilot.
-4. Initialize the base configuration.
+### The Installation Process
+
+1.  **Submodule Initialization**: The script adds `gemini-tools` as a git submodule in the `.sdlc/` directory. This keeps the orchestration logic isolated and easily updatable.
+2.  **Hybrid Proxy Setup**: It runs `setup-ai-symlinks.sh` to generate **Real Proxy Files** in your project root (e.g., `.gemini/`, `.claude/`, `.github/copilot/`). 
+    -   Unlike brittle symlinks, these are actual files (shell script wrappers and Markdown bridges) that point back to the central intelligence in the submodule.
+    -   This ensures maximum compatibility with AI agents that may not follow symlinks or require specific file structures.
+3.  **Project Container**: A `projects/` directory is created to house isolated, task-specific workspaces managed by the orchestrator.
+4.  **Security Hooks**: Local git hooks are configured to run security scans and synchronization checks.
 
 ## 📖 How to Use
 
@@ -43,31 +46,43 @@ This will:
    - Create a dependency-aware implementation guide.
    - Execute tasks in parallel using isolated Git Worktrees.
 
-## 📁 Project Structure
+## 📁 Artifacts & Project Structure
+
+After installation, your project directory will contain the following artifacts:
 
 ```text
 .
-├── .sdlc/                  # Gemini-Tools Submodule
-│   ├── .shared-ai/         # Core "Intelligence" directory
-│   │   ├── skills/         # Specialized SDLC workflows
-│   │   ├── hooks/          # Security and session hooks
-│   │   └── ...
+├── .sdlc/                      # The core "Intelligence" (Git Submodule)
+│   ├── .shared-ai/             # Shared skills, hooks, and agents
+│   ├── setup-ai-symlinks.sh    # The tool-agnostic setup engine
 │   └── ...
-├── .gemini/                # Gemini CLI config (symlinked to .sdlc/.shared-ai)
-├── .claude/                # Claude Code config (symlinked to .sdlc/.shared-ai)
-└── projects/               # Standardized container for project-based work
-    └── {my-project}/       # An individual project managed by the tools
-        ├── documentation/  # Where project-specific inputs go
-        ├── PRD.md
-        ├── TECH_PLAN.md
-        └── ...
+├── .gemini/                    # Gemini CLI configuration
+│   ├── skills/                 # Markdown bridges to shared skills
+│   └── hooks/                  # Script wrappers for shared hooks
+├── .claude/                    # Claude Code configuration
+│   ├── skills/                 # Markdown bridges to shared skills
+│   └── hooks/                  # Script wrappers for shared hooks
+├── .github/copilot/            # GitHub Copilot configuration
+│   └── ...
+├── projects/                   # The "Workbench" for AI-managed tasks
+│   └── {project-name}/         # Isolated project context
+│       ├── documentation/      # Inputs, PRDs, and Tech Plans
+│       ├── WORK_ITEMS.md       # The live roadmap for the project
+│       └── ...
+└── .gitignore                  # Automatically updated to ignore .sdlc/ and projects/
 ```
+
+### Why "Hybrid Proxies"?
+
+AI agents have varying levels of support for symlinks and directory structures. **Gemini-Tools** solves this by generating:
+-   **Markdown Bridges**: Small `.md` files that instruct the AI agent on where to find the full skill definitions in the submodule.
+-   **Script Wrappers**: Small `.sh` files that `exec` the shared hooks from the submodule, ensuring consistent behavior across all agents.
 
 ## 🔍 Troubleshooting
 
 | Issue | Cause | Solution |
 | :--- | :--- | :--- |
-| **Symlink Errors** | Files exist where symlinks should be. | Run `./setup-ai-symlinks.sh` again; it will warn you of conflicts. Delete the conflicting local folders and re-run. |
+| **Proxy Out of Sync** | Submodule updated but proxies are old. | Re-run `bash .sdlc/setup-ai-symlinks.sh` to refresh the proxy files. |
 | **Worktree Conflicts** | Attempting to add a worktree for a branch that is already checked out. | The orchestrator handles this, but if manual intervention is needed, use `git worktree list` and `git worktree remove`. |
 | **Context Overflow** | Project documents are extremely large. | Use the `context-manager` skill to summarize and trim irrelevant sections. |
 | **Missing Tasks** | `WORK_ITEMS.md` is out of sync. | Run the `implementation-planner` again to regenerate the roadmap based on current code state. |

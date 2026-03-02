@@ -28,7 +28,7 @@ fi
 
 # 3. Verify the setup script exists before running
 if [ -f "$SUBMODULE_DIR/setup-ai-symlinks.sh" ]; then
-    echo "🔗 Symlinking AI config folders..."
+    echo "🔗 Setting up AI proxy configurations..."
     bash "$SUBMODULE_DIR/setup-ai-symlinks.sh"
 else
     echo "❌ Error: $SUBMODULE_DIR/setup-ai-symlinks.sh not found. Submodule may not have initialized correctly."
