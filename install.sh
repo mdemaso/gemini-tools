@@ -48,11 +48,11 @@ else
 fi
 
 # 3. Verify the setup script exists before running
-if [ -f "$SUBMODULE_DIR/setup-ai-symlinks.sh" ]; then
+if [ -f "$SUBMODULE_DIR/.agents/hooks/sync-and-link.sh" ]; then
     echo "🔗 Setting up AI proxy configurations..."
-    bash "$SUBMODULE_DIR/setup-ai-symlinks.sh"
+    bash "$SUBMODULE_DIR/.agents/hooks/sync-and-link.sh"
 else
-    echo "❌ Error: $SUBMODULE_DIR/setup-ai-symlinks.sh not found. Submodule may not have initialized correctly."
+    echo "❌ Error: $SUBMODULE_DIR/.agents/hooks/sync-and-link.sh not found. Submodule may not have initialized correctly."
     exit 1
 fi
 

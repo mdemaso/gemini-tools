@@ -24,7 +24,7 @@ curl -sSL https://raw.githubusercontent.com/mdemaso/gemini-tools/main/install.sh
 ### The Installation Process
 
 1.  **Submodule Initialization**: The script adds `gemini-tools` as a git submodule in the `.sdlc/` directory. This keeps the orchestration logic isolated and easily updatable.
-2.  **Configuration Setup**: It runs `setup-ai-symlinks.sh` to initialize the unified AI configuration.
+2.  **Configuration Setup**: It runs `.agents/hooks/sync-and-link.sh` to initialize the unified AI configuration.
     -   **Unified Core**: A single `.agents/` folder is symlinked from the submodule into your project root. This ensures all tools share the same configuration, skills, and hooks.
 3.  **Project Container**: A `projects/` directory is created to house isolated, task-specific workspaces managed by the orchestrator.
 4.  **Security Hooks**: Local git hooks are configured to run security scans and synchronization checks.
@@ -55,7 +55,8 @@ After installation, your project directory will contain the following artifacts:
 .
 ├── .sdlc/                      # The core "Intelligence" (Git Submodule)
 │   ├── .agents/                # Unified skills, hooks, and settings
-│   ├── setup-ai-symlinks.sh    # The tool-agnostic setup engine
+│   │   ├── hooks/
+│   │   │   └── sync-and-link.sh # The tool-agnostic setup engine
 │   └── ...
 ├── .agents/                    # Symlink to .sdlc/.agents/
 └── projects/                   # The "Workbench" for AI-managed tasks
@@ -72,7 +73,7 @@ By merging all core logic into a single hub and using folder-level symlinks:
 
 | Issue | Cause | Solution |
 | :--- | :--- | :--- |
-| **Out of Sync** | Submodule updated but links are broken. | Re-run `bash .sdlc/setup-ai-symlinks.sh` to refresh the symlinks. |
+| **Out of Sync** | Submodule updated but links are broken. | Re-run `bash .sdlc/.agents/hooks/sync-and-link.sh` to refresh the symlinks. |
 | **Worktree Conflicts** | Attempting to add a worktree for a branch that is already checked out. | The orchestrator handles this, but if manual intervention is needed, use `git worktree list` and `git worktree remove`. |
 | **Context Overflow** | Project documents are extremely large. | Use the `context-manager` skill to summarize and trim irrelevant sections. |
 | **Missing Tasks** | `WORK_ITEMS.md` is out of sync. | Run the `implementation-planner` again to regenerate the roadmap based on current code state. |
