@@ -8,7 +8,7 @@ set -e
 REPO_URL="https://github.com/mdemaso/gemini-tools.git"
 SUBMODULE_DIR=".sdlc"
 
-echo "🚀 Installing Gemini/Claude SDLC Orchestration System as Submodule..."
+echo "🚀 Installing Gemini/Claude SDLC Orchestration System..."
 
 # 1. Ensure we are in a git repository
 if [ ! -d ".git" ]; then
@@ -18,12 +18,31 @@ fi
 
 # 2. Add or update the submodule
 if [ -d "$SUBMODULE_DIR" ]; then
-    echo "Info: $SUBMODULE_DIR already exists. Updating to latest..."
-    # Ensure it's tracking main
+    echo "Info: $SUBMODULE_DIR already exists. Forcing update to latest main..."
+    
+    # Sync submodule configuration
+    git submodule sync --quiet "$SUBMODULE_DIR"
+    
+    # Ensure it is initialized
+    git submodule update --init --recursive "$SUBMODULE_DIR"
+    
+    # Force fetch and reset to origin/main inside the submodule
+    (
+        cd "$SUBMODULE_DIR"
+        git fetch origin main --quiet
+        git checkout -B main origin/main --quiet
+        git reset --hard origin/main --quiet
+        git pull origin main --quiet # Extra insurance
+    )
+    
+    # Update the parent's tracking branch config
     git config -f .gitmodules "submodule.$SUBMODULE_DIR.branch" main || true
-    git submodule update --remote --init --recursive "$SUBMODULE_DIR"
 else
     echo "📦 Adding gemini-tools submodule tracking main branch..."
+    # Clear any stale index entries or directories
+    git rm -r --cached "$SUBMODULE_DIR" 2>/dev/null || true
+    rm -rf "$SUBMODULE_DIR"
+    
     git submodule add --force -b main "$REPO_URL" "$SUBMODULE_DIR"
     git submodule update --init --recursive "$SUBMODULE_DIR"
 fi
