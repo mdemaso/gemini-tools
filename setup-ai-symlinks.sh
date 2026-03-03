@@ -155,4 +155,13 @@ write_gemini_settings
 write_claude_settings
 write_copilot_settings
 
+# 3. Generate Gemini command TOMLs from Markdown sources
+# This ensures that our cross-agent SDLC commands are available as slash commands in Gemini
+GENERATOR_SCRIPT="$SCRIPT_DIR/.agents/scripts/generate-gemini-commands.sh"
+if [ -f "$GENERATOR_SCRIPT" ]; then
+    bash "$GENERATOR_SCRIPT"
+else
+    echo "⚠️ Warning: Gemini command generator not found at $GENERATOR_SCRIPT"
+fi
+
 echo "✅ AI configurations generated successfully."
