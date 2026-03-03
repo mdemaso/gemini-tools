@@ -18,10 +18,18 @@ PATTERNS=(
 
 for pattern in "${PATTERNS[@]}"; do
   if echo "$INPUT" | grep -qE "$pattern"; then
-    echo "{"decision": "deny", "message": "Potential secret or API key detected in context. Blocked for security."}"
+    # Detect the caller
+    # Claude passes hook_event_name (e.g., UserPromptSubmit)
+    if echo "$INPUT" | grep -q "hook_event_name"; then
+        # Claude format
+        echo '{"decision": "block", "reason": "Potential secret or API key detected in context. Blocked for security."}'
+    else
+        # Default/Gemini format
+        echo '{"decision": "deny", "message": "Potential secret or API key detected in context. Blocked for security."}'
+    fi
     exit 0
   fi
 done
 
 # If no secrets found, allow the action
-echo "{"decision": "allow"}"
+echo '{"decision": "allow"}'

@@ -65,7 +65,7 @@ After installation, your project directory will contain the following artifacts:
 
 By merging all core logic into a single hub and using folder-level symlinks:
 -   **Zero Maintenance**: Any new skill or hook added to the repository is immediately available to all agents without any script updates.
--   **Consistent Experience**: Your custom `settings.json`, specialized skills, and security hooks are identical across all supported AI tools.
+-   **Consistent Experience**: Your custom settings, specialized skills, and security hooks are automatically generated for each supported AI tool, ensuring a unified configuration across Gemini, Claude, and more.
 -   **Cleaner Root**: No more tool-specific hidden folders or scattered aliases, keeping your repository root focused and organized.
 
 ## 🔍 Troubleshooting

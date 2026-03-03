@@ -44,8 +44,8 @@ REL_BASE=$(get_relative_path "$SCRIPT_DIR" "$CURRENT_DIR")
 
 echo "🔧 Tools Base: $REL_BASE"
 
-# If we are running in the tool repo itself, REL_BASE is "."
-# We only want to symlink if we are in a parent project
+# 1. Link the .agents configuration folder
+# This contains the hooks, skills, and shared references
 if [[ "$REL_BASE" != "." ]]; then
     echo "📂 Linking .agents configuration folder..."
     
@@ -57,33 +57,102 @@ if [[ "$REL_BASE" != "." ]]; then
     ln -s "$REL_BASE/.agents" ".agents"
 fi
 
-# 2. Link only settings.json into tool-specific folders
-# This avoids skill conflicts since agents scan both .agents and tool-specific folders
-setup_tool_settings() {
-    local target_folder="$1"
-    if [ -d ".agents" ]; then
-        echo "📂 Setting up tool-specific settings for $target_folder..."
+# 2. Generate tool-specific settings.json
+# Instead of a single shared file, we generate the format needed for each tool.
 
-        # Remove if it's a symlink (old strategy)
-        if [ -L "$target_folder" ]; then
-            rm "$target_folder"
-        fi
-
-        mkdir -p "$target_folder"
-
-        # Calculate depth for the symlink back to .agents/settings.json
-        local depth=1
-        [[ "$target_folder" == *"/"* ]] && depth=2
-        local to_agents=""
-        for ((i=0; i<$depth; i++)); do to_agents="../${to_agents}"; done
-
-        ln -sf "${to_agents}.agents/settings.json" "$target_folder/settings.json"
-    fi
+write_gemini_settings() {
+    local target=".gemini/settings.json"
+    mkdir -p "$(dirname "$target")"
+    cat > "$target" <<EOF
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".agents/hooks/sync-and-link.sh"
+          }
+        ]
+      }
+    ],
+    "BeforeModel": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".agents/hooks/security-scan.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+EOF
+    echo "✅ Generated Gemini settings: $target"
 }
 
-setup_tool_settings ".gemini"
-setup_tool_settings ".claude"
-setup_tool_settings ".github/copilot"
+write_claude_settings() {
+    local target=".claude/settings.json"
+    mkdir -p "$(dirname "$target")"
+    cat > "$target" <<EOF
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".agents/hooks/sync-and-link.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".agents/hooks/security-scan.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+EOF
+    echo "✅ Generated Claude settings: $target"
+}
 
-echo "✅ AI configurations linked successfully (settings only)."
+write_copilot_settings() {
+    local target=".github/copilot/settings.json"
+    mkdir -p "$(dirname "$target")"
+    # Currently uses a format compatible with our generic structure
+    cat > "$target" <<EOF
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".agents/hooks/sync-and-link.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+EOF
+    echo "✅ Generated Copilot settings: $target"
+}
 
+# TODO: Add OpenAI Codex settings generation once it supports hooks
+# write_codex_settings() { ... }
+
+# Execute generation
+write_gemini_settings
+write_claude_settings
+write_copilot_settings
+
+echo "✅ AI configurations generated successfully."
