@@ -16,14 +16,16 @@ if [ ! -d ".git" ]; then
     git init
 fi
 
-# 2. Add as a submodule
+# 2. Add or update the submodule
 if [ -d "$SUBMODULE_DIR" ]; then
-    echo "Info: $SUBMODULE_DIR already exists. Updating..."
-    git submodule update --init --recursive
+    echo "Info: $SUBMODULE_DIR already exists. Updating to latest..."
+    # Ensure it's tracking main
+    git config -f .gitmodules "submodule.$SUBMODULE_DIR.branch" main || true
+    git submodule update --remote --init --recursive "$SUBMODULE_DIR"
 else
-    echo "📦 Adding gemini-tools submodule..."
-    git submodule add --force "$REPO_URL" "$SUBMODULE_DIR"
-    git submodule update --init --recursive
+    echo "📦 Adding gemini-tools submodule tracking main branch..."
+    git submodule add --force -b main "$REPO_URL" "$SUBMODULE_DIR"
+    git submodule update --init --recursive "$SUBMODULE_DIR"
 fi
 
 # 3. Verify the setup script exists before running
@@ -35,14 +37,14 @@ else
     exit 1
 fi
 
-# 3. Ensure a local projects folder exists
+# 4. Ensure a local projects folder exists
 if [ ! -d "projects" ]; then
     echo "📁 Creating local projects folder..."
     mkdir projects
 fi
 
 echo ""
-echo "✅ Installation Complete!"
+echo "✅ Installation/Update Complete!"
 
 echo "-------------------------------------------------------"
 echo "Your codebase is now AI-ready (Tools isolated in .sdlc)"
