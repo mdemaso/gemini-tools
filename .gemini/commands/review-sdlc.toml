@@ -1,6 +1,0 @@
-description = "Present changes in logical segments for human-in-the-loop review."
-prompt = """
-@{.agents/commands/review-sdlc.md}
-
-User Request/Arguments: {{args}}
-"""

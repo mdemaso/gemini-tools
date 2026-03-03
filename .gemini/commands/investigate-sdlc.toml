@@ -1,6 +1,0 @@
-description = "Performs deep codebase analysis and architectural mapping."
-prompt = """
-@{.agents/commands/investigate-sdlc.md}
-
-User Request/Arguments: {{args}}
-"""

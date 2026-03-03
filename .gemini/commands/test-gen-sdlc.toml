@@ -1,6 +1,0 @@
-description = "Automatically generate test suites based on PRD and Tech Plan."
-prompt = """
-@{.agents/commands/test-gen-sdlc.md}
-
-User Request/Arguments: {{args}}
-"""

@@ -1,6 +1,0 @@
-description = "Drives end-to-end SDLC with multi-agent execution."
-prompt = """
-@{.agents/commands/orchestrate-sdlc.md}
-
-User Request/Arguments: {{args}}
-"""

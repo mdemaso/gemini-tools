@@ -1,6 +1,0 @@
-description = "Generates a Technical Design Document (Tech Plan) from a PRD."
-prompt = """
-@{.agents/commands/tech-plan-sdlc.md}
-
-User Request/Arguments: {{args}}
-"""
