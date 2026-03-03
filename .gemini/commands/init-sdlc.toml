@@ -1,0 +1,6 @@
+description = "Scaffolds a new project directory within the workspace."
+prompt = """
+@{.agents/commands/init-sdlc.md}
+
+User Request/Arguments: {{args}}
+"""

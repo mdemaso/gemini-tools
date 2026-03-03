@@ -176,7 +176,7 @@ write_copilot_settings
 # 3. Generate Gemini command TOMLs
 GENERATOR_SCRIPT="$TOOLS_ROOT/.agents/scripts/generate-gemini-commands.sh"
 if [ -f "$GENERATOR_SCRIPT" ]; then
-    bash "$GENERATOR_SCRIPT"
+    bash "$GENERATOR_SCRIPT" "$CURRENT_DIR"
 else
     echo "⚠️ Warning: Gemini command generator not found at $GENERATOR_SCRIPT"
 fi

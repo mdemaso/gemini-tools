@@ -1,0 +1,6 @@
+description = "Validates tasks against the PRD/Tech Plan and ensures codebase consistency."
+prompt = """
+@{.agents/commands/validate-sdlc.md}
+
+User Request/Arguments: {{args}}
+"""

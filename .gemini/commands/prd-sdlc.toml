@@ -1,0 +1,6 @@
+description = "Generates a Product Requirements Document (PRD) from project documentation."
+prompt = """
+@{.agents/commands/prd-sdlc.md}
+
+User Request/Arguments: {{args}}
+"""

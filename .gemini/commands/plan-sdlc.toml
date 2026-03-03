@@ -1,0 +1,6 @@
+description = "Generates a detailed, parallelizable implementation plan for the current task."
+prompt = """
+@{.agents/commands/plan-sdlc.md}
+
+User Request/Arguments: {{args}}
+"""

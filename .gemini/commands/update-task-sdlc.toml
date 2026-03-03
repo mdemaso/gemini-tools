@@ -1,0 +1,6 @@
+description = "Updates the status of tasks in the WORK_ITEMS.md file."
+prompt = """
+@{.agents/commands/update-task-sdlc.md}
+
+User Request/Arguments: {{args}}
+"""

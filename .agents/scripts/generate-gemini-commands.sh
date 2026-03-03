@@ -4,9 +4,12 @@ set -e
 
 # Get the directory where this script is located
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-# Project root is 2 levels up from scripts/
-PROJECT_ROOT="$( cd "$SCRIPT_DIR/../.." && pwd )"
-SOURCE_DIR="$PROJECT_ROOT/.agents/commands"
+# Default project root is 2 levels up from scripts/ (the tools repo root)
+TOOLS_ROOT="$( cd "$SCRIPT_DIR/../.." && pwd )"
+# If an argument is provided, use it as the target project root
+PROJECT_ROOT="${1:-$TOOLS_ROOT}"
+
+SOURCE_DIR="$TOOLS_ROOT/.agents/commands"
 TARGET_DIR="$PROJECT_ROOT/.gemini/commands"
 
 mkdir -p "$TARGET_DIR"
