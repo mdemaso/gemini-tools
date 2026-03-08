@@ -1,51 +1,46 @@
 ---
 name: review-skill
-description: "Human-in-the-loop review gate that presents changes in logical, digestible pieces for user approval. Use this when a task is ready for review to ensure alignment with PRD/Tech Plan."
+description: "Human-in-the-loop review gate that presents changes in logical, digestible pieces for user approval. Use this when a task is ready for review to ensure alignment with Requirements and Architecture."
 ---
 
 # Review Skill
 
-This skill provides a structured, human-centric review process. Instead of presenting a single massive diff, it breaks changes down into logical segments and guides the user through them sequentially.
+This skill provides a structured, human-centric review process. It breaks changes down into logical segments and guides the user through them sequentially to clear Human Gates.
 
 ## Workflow
 
 ### 1. Analyze and Segment Changes
-Categorize all changes into logical "Review Units". A Review Unit is a cohesive set of changes that should be understood together.
+Categorize all changes into logical "Review Units".
 
 **Logical Ordering Strategy:**
-1.  **Definitions & Interfaces**: New types, interfaces, or abstract classes.
-2.  **Foundations**: New classes, constants, or utility functions before they are used.
-3.  **Implementations**: The core logic that fulfills the requirements.
-4.  **Integrations**: Changes to existing code that utilize the new foundations or implementations.
-5.  **Tests & Documentation**: Supporting tests and non-architectural documentation updates.
+1.  **Foundations**: New classes, constants, or utility functions.
+2.  **Implementations**: The core logic fulfilling `R-*` and `D-*` artifacts.
+3.  **Integrations**: Changes to existing code.
+4.  **Verifications**: Corresponding `V-*` tests and results.
 
 ### 2. Iterative Review Loop
 For each Review Unit, follow this sequence:
 
 #### A. Present the Unit Context
-- **Summary**: A concise explanation of what this unit accomplishes.
-- **Justification**: The technical rationale (referencing the PRD, Tech Plan, or specific task).
-- **Files Involved**: A list of paths included in this unit.
+- **Summary**: Concise explanation.
+- **Traceability**: Reference the specific `W-*`, `D-*`, and `R-*` items.
+- **Files Involved**: List of paths.
 
 #### B. File-by-File Walkthrough
-Present the diff for each file in the unit one by one. After each file (or a small group of highly coupled files), pause for user feedback.
+Present diffs and pause for feedback.
 
 #### C. Handle User Feedback & Inquiries
-- **Questions**: Provide clear, technical answers. If the answer reveals a flaw or a needed change in direction, treat it as a "Request Fix".
-- **Request Fix / Course Correction**:
-    1.  Evaluate if the change impacts higher-level documents (**PRD**, **Tech Plan**, or **Implementation Plan**).
-    2.  If it does, **you MUST update those documents first** to maintain the source of truth.
-    3.  Apply the fixes to the code.
-    4.  Verify the fix and then resume/restart the review for the impacted units.
-- **Approval**: Once the user confirms the unit is correct, proceed to the next one.
+- **Request Fix**:
+    1.  If the change impacts `R-*` or `D-*`, **you MUST update those atomic artifacts first**.
+    2.  Mark subsequent phases as "Dirty" `[!]` in `status.md` if necessary.
+    3.  Apply fixes, verify, and resume review.
 
 ### 3. Finalization
 Once all Review Units are approved:
-1.  Perform a final consistency check between the code, PRD, and Tech Plan.
-2.  Mark the task as Done in `WORK_ITEMS.md`.
+1.  Perform a final consistency check via `implementation-validator`.
+2.  Update the status in `work-items/W-*.md` and `work-items/index.md`.
+3.  **Human Gate**: Ask the user to sign off on the specific phase gate in `status.md`.
 
 ## Guidelines for Effective Reviews
-- **Be Surgical**: Focus only on the changes relevant to the current unit.
-- **Explain "Why", Not Just "What"**: Use the justification to connect code patterns to the original project goals.
-- **Bi-directional Alignment**: If code deviates from the Tech Plan during implementation for a good reason, use the review to confirm the deviation and update the Tech Plan accordingly.
-- **Interactive Engagement**: Encourage the user to scrutinize specific areas of complexity.
+- **Traceability First**: Always link code back to the atomic requirement it fulfills.
+- **Bi-directional Alignment**: If implementation forces a change in architecture, update the `D-*` artifact immediately.

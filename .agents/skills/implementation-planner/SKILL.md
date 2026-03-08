@@ -5,33 +5,26 @@ description: "Generates a parallelizable, dependency-aware implementation guide 
 
 # Implementation Planner Skill
 
-This skill breaks down a Technical Design and PRD into a concrete, executable roadmap optimized for parallel AI-driven development.
+This skill translates Technical Architecture into actionable tasks, generating atomic work items and a strategic Implementation Plan.
 
 ## Workflow
 
 1.  **Locate Project Context**:
-    *   Read `PRD.md`, `TECH_PLAN.md`, and the project codebase.
-
-2.  **Define Dependency Graph (DAG)**:
-    *   Analyze components and identify prerequisites to maximize parallel execution.
-
-3.  **Git Worktree Strategy**:
-    *   For multi-agent parallelization, define a branching and worktree convention:
-        *   **Main Branch**: `main` or `develop`.
-        *   **Task Branches**: `task/{task-id}-{short-desc}`.
-        *   **Worktree Paths**: `.worktrees/{task-id}`.
-    *   Specify how independent `Parallel Class` tracks will be isolated into their own worktrees to prevent file system conflicts between agents.
-
-4.  **Generate Implementation Guide**:
-    *   Create `IMPLEMENTATION_GUIDE.md`.
-    *   **Parallelization Strategy**: Explicitly tag tasks that can be performed in parallel.
-    *   **Worktree Instructions**: Provide the specific `git worktree add` commands for each parallel track.
-
-5.  **Initialize Work Item Index**:
-    *   Create `WORK_ITEMS.md` with: Task ID, Description, Dependencies, Parallel Class, and Status.
-
-6.  **Output**: Notify the user that the parallel roadmap and worktree strategy are ready.
+    *   Identify the target project directory: `projects/{domain}/{project_id}/`.
+    *   Read `systems-architecture.md` and atomic `tech-decisions/D-*.md` files.
+2.  **Generate Atomic Work Items**:
+    *   For each component or feature, define concrete, executable tasks.
+    *   **Output**: Create `work-items/W-*.md` files following the template in `scratch.md`.
+    *   **Index**: Create `work-items/index.md` to track status and dependencies.
+    *   **Human Gate**: Wait for user approval of work items. Mark "Work Items Approved" in `status.md`.
+3.  **Generate Implementation Plan**:
+    *   Define a high-level roadmap and parallel execution strategy.
+    *   **Output**: Create `implementation-plan.md` in the project root.
+    *   **Parallelization Strategy**: Identify `Parallel Class` groups for concurrent execution.
+    *   **Human Gate**: Wait for user approval of the Implementation Plan. Mark "Implementation Plan Approved" in `status.md`.
+4.  **Update Artifact Map**:
+    *   Map Work Items (`W-*`) to Technical Decisions (`D-*`) and Requirements (`R-*`) in `artifact-map.md`.
 
 ## Constraints
-- The Work Item Index must be a Markdown table.
-- Tasks in the same `Parallel Class` MUST be assigned unique worktree paths.
+- Work Items MUST be atomic and uniquely identified (e.g., W-001).
+- Dependencies MUST be clearly defined in `W-*.md` files.

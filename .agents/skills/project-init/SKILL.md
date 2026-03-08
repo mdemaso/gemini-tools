@@ -5,7 +5,7 @@ description: "Walks the user through setting up a new project directory within t
 
 # Project Setup Skill
 
-This skill automates the creation of a standardized project directory structure.
+This skill automates the creation of a standardized project directory structure based on the SDLC Process Flow.
 
 ## Workflow
 
@@ -13,21 +13,32 @@ When the user wants to set up a new project, follow these steps:
 
 1.  **Gather Project Details**: Ask the user for the following information:
     *   **Project Name**: The display name of the project (e.g., "AI Research Dashboard").
-    *   **Project ID**: A short identifier (e.g., "AIRD-2024").
+    *   **Domain**: The functional domain (e.g., "internal", "client-a", "research").
+    *   **Project ID**: A short, unique identifier (e.g., "aird-2024").
+    *   **Codebase Path**: The path to the existing codebase or repository (if applicable).
 
 2.  **Validate and Format**:
-    *   Transform the Project Name by replacing all spaces with hyphens (`-`).
-    *   Construct the final directory name using the format: `{project_id}-{formatted_project_name}`.
+    *   Ensure `domain` and `project_id` are lowercase and URL-friendly (replace spaces with hyphens).
 
 3.  **Execute Creation**:
-    *   **Root Directory**: Ensure the `projects/` root directory exists (create it if missing).
-    *   **Project Directory**: Create a directory at `projects/{project_id}-{formatted_project_name}`.
-    *   **Documentation Folder**: Inside the project directory, ensure a `documentation/` subfolder exists (create it if missing).
-    *   Add a placeholder `README.md` inside the project folder summarizing the project metadata.
-    *   **Register Project**: Add an entry to the `projects/INDEX.md` file (create it if it doesn't exist) with the Project ID, Project Name, and the path to the project folder.
+    *   **Root Directory**: `projects/{domain}/{project_id}/`
+    *   **Sub-directories**:
+        *   `inputs/`: For raw materials and source info.
+        *   `requirements/`: For atomic `R-*.md` files.
+        *   `tech-decisions/`: For atomic `D-*.md` files.
+        *   `work-items/`: For atomic `W-*.md` files.
+        *   `verifications/`: For atomic `V-*.md` files.
+        *   `changes/`: For atomic `C-*.md` files.
+    *   **Initial Files**:
+        *   `status.md`: Copy the template from `scratch.md` and initialize with project metadata.
+        *   `README.md`: Contains project name, status list, and path to the codebase/domain.
+        *   `artifact-map.md`: Initialize as an empty traceability matrix.
 
-4.  **Confirm**: Notify the user that the project directory is ready and prompt them to place any supporting documentation in the new `documentation/` folder.
+4.  **Confirm**:
+    *   Notify the user that the project structure is initialized.
+    *   Ask for context information or for the user to place supporting documents into the `inputs/` folder.
+    *   **Human Gate**: Wait for user confirmation that Phase 0 (Initialization) is complete.
 
 ## Constraints
-- Always use the `projects/` root directory.
-- Ensure the directory name is lowercase and URL-friendly.
+- Always use the `projects/{domain}/{project_id}/` structure.
+- Do not create placeholder files for phases beyond Initialization.

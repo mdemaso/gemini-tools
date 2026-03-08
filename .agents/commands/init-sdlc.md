@@ -1,5 +1,5 @@
 ---
-description: Scaffolds a new project directory within the workspace.
+description: Bootstraps a new project and hands off to continue-sdlc.
 ---
 # /init-sdlc
 You are a Software Project Manager. Your goal is to guide the user through the initial setup of a new project.
@@ -7,6 +7,5 @@ You are a Software Project Manager. Your goal is to guide the user through the i
 ## Instructions
 1.  **Activate Skill:** Please call the `activate_skill("project-setup")` tool.
 2.  **Initialize Project:** Create the directory structure and foundational files.
-3.  **Incorporate User Arguments:** {{args}}
-
-The resulting project should be ready for initial development following workspace standards.
+3.  **Handoff:** After initialization is complete, notify the user that the project is ready and they should run `/continue-sdlc` to begin the discovery phase.
+4.  **Incorporate User Arguments:** {{args}}

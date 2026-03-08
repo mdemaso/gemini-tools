@@ -5,24 +5,31 @@ description: "Generates a Product Requirements Document (PRD) by analyzing files
 
 # PRD Generator Skill
 
-This skill analyzes documents in a project's `documentation` folder to generate a comprehensive Product Requirements Document (PRD).
+This skill analyzes documents in a project's `inputs/` folder to generate atomic requirements and a high-level Product Requirements Document (PRD).
 
 ## Workflow
 
-1.  **Locate the Project**: 
-    *   If running in a standalone repository: Use the root directory.
-    *   If running in a workspace: Identify the target project directory in the `projects/` folder.
-2.  **Analyze Documentation**: 
-    *   Read all supporting files found within the project's `documentation/` subfolder.
-    *   **Diverse Format Support**: Process text files, Markdown, PDFs, and images (e.g., diagrams, whiteboard photos) using your multimodal capabilities to extract relevant requirements and context.
-3.  **Resolve Ambiguity**: 
-    *   If you encounter missing information, ambiguity, or contradictory statements across the documents, you MUST pause and ask the user for clarification.
-    *   To do this, read and strictly follow the [Clarification Strategy](../../../shared-references/clarification-strategy.md) when formulating your questions.
-4.  **Generate the PRD**: Once all ambiguities are resolved (or if none exist), generate a PRD with the following required sections:
-    *   **Executive Summary**: A high-level overview of the project's goals, target audience, and primary value proposition.
-    *   **Requirements**:
-        *   **Functional Requirements**: What the product must do.
-        *   **Non-Functional Requirements**: How the product must perform (e.g., performance, security, scale).
-    *   **MVP Details**: Specifically define the scope for the Minimum Viable Product, isolating core features from nice-to-haves.
-    *   **Follow Up Items**: A list of unresolved questions, next steps, or dependencies that need attention before development begins.
-5.  **Output**: Write the generated content to a `PRD.md` file in the root of the project folder. Briefly summarize the document and notify the user when complete.
+1.  **Locate Project Context**:
+    *   Identify the target project directory: `projects/{domain}/{project_id}/`.
+2.  **Analyze Inputs**:
+    *   Read all supporting files found within the project's `inputs/` subfolder.
+    *   **Multimodal Analysis**: Process text, Markdown, diagrams, and photos to extract raw requirements.
+3.  **Resolve Ambiguity**:
+    *   If missing info or contradictions exist, pause and ask the user for clarification using the [Clarification Strategy](../../../shared-references/clarification-strategy.md).
+    *   **Human Gate**: Once inputs are clear, mark "Inputs Gathered" in `status.md`.
+4.  **Generate Atomic Requirements**:
+    *   Break down raw information into atomic, testable requirements.
+    *   **Output**: Create `requirements/R-*.md` files (one per requirement) following the template in `scratch.md`.
+    *   **Index**: Create `requirements/index.md` to organize these files into logical categories.
+    *   **Human Gate**: Wait for user approval of atomic requirements. Mark "Requirements Approved" in `status.md`.
+5.  **Generate High-Level PRD**:
+    *   Synthesize atomic requirements into a cohesive vision.
+    *   **Output**: Create `product-requirements.md` in the project root.
+    *   **Traceability**: Ensure `product-requirements.md` links to the relevant `R-*` items.
+    *   **Human Gate**: Wait for user approval of the PRD. Mark "Product Requirements Approved" in `status.md`.
+6.  **Update Artifact Map**:
+    *   Add the new requirements to the `artifact-map.md`.
+
+## Constraints
+- Requirements MUST be atomic and uniquely identified (e.g., R-001).
+- The index MUST be categorized logically.
