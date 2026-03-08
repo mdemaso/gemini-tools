@@ -7,6 +7,69 @@ description: "Master project manager that drives end-to-end SDLC with parallel m
 
 This orchestrator manages the high-level SDLC state machine, enforcing human gates and artifact traceability.
 
+## SDLC Flow Diagram
+
+```mermaid
+stateDiagram-v2
+    [*] --> Initialized
+    Initialized --> SourceGathered: Gather Source Info
+    SourceGathered --> RequirementsGen: Generate Requirements
+    
+    RequirementsGen --> RequirementsReview: Human Review
+    RequirementsReview --> RequirementsGen: Rejected
+    RequirementsReview --> ProductRequirementsGen: Approved
+    
+    ProductRequirementsGen --> ProductReview: Human Review
+    ProductReview --> ProductRequirementsGen: Rejected
+    ProductReview --> TechDecisionsGen: Approved
+    
+    TechDecisionsGen --> TechReview: Human Review
+    TechReview --> TechDecisionsGen: Rejected
+    TechReview --> SystemArchGen: Approved
+    
+    SystemArchGen --> ArchReview: Human Review
+    ArchReview --> SystemArchGen: Rejected
+    ArchReview --> WorkItemsGen: Approved
+    
+    WorkItemsGen --> WorkItemsReview: Human Review
+    WorkItemsReview --> WorkItemsGen: Rejected
+    WorkItemsReview --> VerificationItemsGen: Approved
+    
+    VerificationItemsGen --> VerificationReview: Human Review
+    VerificationReview --> VerificationItemsGen: Rejected
+    VerificationReview --> ImplementationPlanGen: Approved
+    
+    ImplementationPlanGen --> PlanReview: Human Review
+    PlanReview --> ImplementationPlanGen: Rejected
+    PlanReview --> WorkExecution: Approved
+
+    state WorkExecution {
+        [*] --> ExecuteWorkItem
+        ExecuteWorkItem --> VerifyItem: Run Verifications
+        VerifyItem --> ExecuteWorkItem: Next Item
+        VerifyItem --> [*]: All Items Complete
+    }
+
+    WorkExecution --> VerificationCheck: Final Verification
+    VerificationCheck --> AskForChanges: Requirements Verified
+    
+    state AskForChanges <<choice>>
+    AskForChanges --> ProjectComplete: No Changes Needed
+    AskForChanges --> ChangeOrderGen: Changes Requested
+    
+    ChangeOrderGen --> ChangeOrderReview: Human Review
+    ChangeOrderReview --> ChangeOrderGen: Rejected
+    ChangeOrderReview --> ReentryDecision: Approved
+    
+    state ReentryDecision <<choice>>
+    ReentryDecision --> RequirementsGen: Insert at Requirements
+    ReentryDecision --> TechDecisionsGen: Insert at Tech Decisions
+    ReentryDecision --> WorkItemsGen: Insert at Work Items
+    ReentryDecision --> VerificationItemsGen: Insert at Verification
+    
+    ProjectComplete --> [*]
+```
+
 ## Workflow
 
 1.  **Phase 0: Initialization (Init)**
@@ -52,6 +115,81 @@ This orchestrator manages the high-level SDLC state machine, enforcing human gat
 8.  **Phase 7: Change Management (Change Mgmt)**
     *   If changes are requested, create `changes/C-*.md`.
     *   Perform impact analysis and re-enter the flow at the appropriate phase (Discovery, Requirements, Tech, or Work Items).
+
+## Final Folder Structure
+
+```plaintext
+projects/
+    {domain}/
+        {project_id}/
+            product-requirements.md
+            systems-architecture.md
+            implementation-plan.md
+            artifact-map.md
+            status.md
+            inputs/
+            requirements/
+                R-*.md // A file per requirement
+                index.md // A index file that has links to all requirements files
+            tech-decisions/
+                D-*.md
+                index.md
+            work-items/
+                W-*.md
+                index.md
+            verifications/
+                V-*.md
+                index.md
+            changes/
+                C-*.md
+                index.md
+```
+
+## Artifact Definitions
+
+### projects/{domain}/{project_id}/status.md
+This file tracks the project's current state and human gates.
+
+**Status Legend:**
+- `[ ]` : Todo / Not Started
+- `[/]` : In Progress
+- `[X]` : Completed & Approved
+- `[!]` : Dirty (Needs update due to upstream change)
+
+### projects/{domain}/{project_id}/inputs/
+The "source of truth" containing raw materials, briefs, transcripts, and reference documents.
+
+### projects/{domain}/{project_id}/product-requirements.md
+A high-level PRD synthesizing atomic requirements into a cohesive vision.
+
+### projects/{domain}/{project_id}/systems-architecture.md
+The Technical Design Document outlining the system structure and C4 diagrams.
+
+### projects/{domain}/{project_id}/implementation-plan.md
+A strategic roadmap detailing the rollout strategy and parallelization classes.
+
+### projects/{domain}/{project_id}/artifact-map.md
+A traceability matrix mapping Requirements (`R-*`) to Decisions (`D-*`), Decisions to Work Items (`W-*`), and Work Items to Verifications (`V-*`).
+
+### projects/{domain}/{project_id}/requirements/
+- **R-*.md**: Atomic, testable requirements with acceptance criteria.
+- **index.md**: Master index of requirements categorized by domain.
+
+### projects/{domain}/{project_id}/tech-decisions/
+- **D-*.md**: Architectural Decision Records (ADRs) documenting technical choices and rationales.
+- **index.md**: Chronological/thematic index of decisions.
+
+### projects/{domain}/{project_id}/work-items/
+- **W-*.md**: Actionable tasks for developers linked to `R-*` and `D-*` artifacts.
+- **index.md**: Status tracker for all work items.
+
+### projects/{domain}/{project_id}/verifications/
+- **V-*.md**: Validation items defining test steps or scripts to verify `W-*` items.
+- **index.md**: Index of project quality assurance coverage.
+
+### projects/{domain}/{project_id}/changes/
+- **C-*.md**: Change Order records for modifications requested after phase approval.
+- **index.md**: Index of project scope evolution.
 
 ## Constraints
 - Artifacts MUST be traceably linked in `artifact-map.md`.
