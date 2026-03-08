@@ -48,8 +48,9 @@ else
 fi
 
 # 3. Verify the setup script exists before running
+# This script handles all symlinks, AI settings, and command generation.
 if [ -f "$SUBMODULE_DIR/.agents/hooks/sync-and-link.sh" ]; then
-    echo "🔗 Setting up AI proxy configurations..."
+    echo "🔗 Running core setup and configuration..."
     bash "$SUBMODULE_DIR/.agents/hooks/sync-and-link.sh"
 else
     echo "❌ Error: $SUBMODULE_DIR/.agents/hooks/sync-and-link.sh not found. Submodule may not have initialized correctly."
@@ -68,4 +69,4 @@ echo "✅ Installation/Update Complete!"
 echo "-------------------------------------------------------"
 echo "Your codebase is now AI-ready (Tools isolated in .sdlc)"
 echo "-------------------------------------------------------"
-echo "To begin, ask your AI agent to 'Run the sdlc-orchestrator'."
+echo "To begin, ask your AI agent to 'Run the sdlc-orchestrator' or use '/init-sdlc'."
