@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Sync and Link Hook
-# Verifies proxy files, pulls the latest version of the tools, and sets up configuration symlinks.
+# Verifies proxy files, pulls the latest version of the tools, and sets up configuration symlinks and commands.
 set -e
 
 # Get the directory where this script is located
@@ -43,7 +43,7 @@ get_relative_path() {
     fi
 }
 
-# 1. Sync from remote
+# 1. Sync from remote (if applicable)
 echo "🔄 Checking for tool updates..."
 
 # Identify the project root and current tools location
@@ -168,17 +168,48 @@ EOF
     echo "✅ Generated Copilot settings: $target"
 }
 
+generate_gemini_commands() {
+    local source_dir="$TOOLS_ROOT/.agents/commands"
+    local target_dir="$CURRENT_DIR/.gemini/commands"
+    
+    if [ ! -d "$source_dir" ]; then
+        echo "⚠️ Warning: Command source directory not found at $source_dir"
+        return
+    fi
+
+    mkdir -p "$target_dir"
+    echo "🛠️  Generating Gemini commands from Markdown sources..."
+
+    # Find all .md files in the source directory
+    find "$source_dir" -name "*.md" | while read -r md_file; do
+        filename=$(basename "$md_file")
+        command_name="${filename%.md}"
+        toml_file="$target_dir/${command_name}.toml"
+        
+        # Extract description from YAML frontmatter (between first two ---)
+        description=$(sed -n '/^---$/,/^---$/p' "$md_file" | grep "^description:" | sed 's/^description:[[:space:]]*//' | sed 's/^"//;s/"$//' | sed "s/^'//;s/'$//" || echo "SDLC Command: $command_name")
+
+        if [ -z "$description" ]; then
+            description="SDLC Command: $command_name"
+        fi
+
+        # Generate the TOML file
+        cat > "$toml_file" <<EOF
+description = "$description"
+prompt = """
+@{.agents/commands/$filename}
+
+User Request/Arguments: {{args}}
+"""
+EOF
+        echo "  ✅ Generated $toml_file"
+    done
+}
+
 # Execute generation
 write_gemini_settings
 write_claude_settings
 write_copilot_settings
-
-# 3. Generate Gemini command TOMLs
-GENERATOR_SCRIPT="$TOOLS_ROOT/.agents/scripts/generate-gemini-commands.sh"
-if [ -f "$GENERATOR_SCRIPT" ]; then
-    bash "$GENERATOR_SCRIPT" "$CURRENT_DIR"
-else
-    echo "⚠️ Warning: Gemini command generator not found at $GENERATOR_SCRIPT"
-fi
+generate_gemini_commands
 
 echo "✅ AI configurations synced and generated successfully."
